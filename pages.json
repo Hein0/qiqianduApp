@@ -1,0 +1,77 @@
+{
+	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+		{
+			"path": "pages/index/index", // 首页
+			"style": {
+				"navigationBarTitleText": "首页",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+		    "path" : "pages/community/community",// 仟度圈
+		    "style" : {
+				"navigationBarTitleText": "仟度圈",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+		    "path" : "pages/search/search",// 超级搜索
+		    "style" : {
+				"navigationBarTitleText": "超级搜索",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+		    "path" : "pages/mine/mine",// 个人中心
+		    "style" : {
+				"navigationBarTitleText": "我的",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+		    "path" : "pages/index/view",// hehe
+		    "style" : {
+				"navigationBarTitleText": "我的",
+				"navigationStyle": "custom"
+			}
+		}
+	],
+	//底部导航
+	"tabBar": {
+		"color": "#707070",
+		"selectedColor": "#05a6fe",
+		"backgroundColor": "#FFFFFF",
+		"borderStyle": "#707070",
+		"list": [{
+			"pagePath": "pages/index/index",
+			"iconPath": "static/images/home_nosel.png",
+			"selectedIconPath": "static/images/home_sel.png",
+			"text": "首页"
+		},
+		{
+			"pagePath": "pages/search/search",
+			"iconPath": "static/images/search_nosel.png",
+			"selectedIconPath": "static/images/search_sel.png",
+			"text": "超级搜索"
+		},
+		{
+			"pagePath": "pages/community/community",
+			"iconPath": "static/images/social_nosel.png",
+			"selectedIconPath": "static/images/social_sel.png",
+			"text": "仟度圈"
+		},
+		{
+			"pagePath": "pages/mine/mine",
+			"iconPath": "static/images/my_nosel.png",
+			"selectedIconPath": "static/images/my_sel.png",
+			"text": "我的"
+		}]
+	},
+	// 底部导航样式
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "柒仟度",
+		"navigationBarBackgroundColor": "#F8F8F8",
+		"backgroundColor": "#F8F8F8"
+	}
+}
