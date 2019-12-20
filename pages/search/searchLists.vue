@@ -4,6 +4,7 @@
 		<view class="pageHead">
 		    <view class="header-wrap">
 		        <view class="index-header">
+					<text class="backIcon" @click="navigateBack"></text>
 		            <view class="input-wrap">
 		                <input type="text" 
 		                       placeholder="搜索商品名或粘贴淘宝商品标题"
@@ -156,6 +157,10 @@ export default {
 		this.value = e.val 
 	},
 	methods: {
+		// 返回
+		navigateBack() {
+			uni.navigateBack()
+		},	
 		goSearch() {
 			
 		},
@@ -178,7 +183,7 @@ export default {
 	.index-header {
 		height: 88rpx;
 		line-height: 88rpx;
-		padding: 0 30rpx;
+		padding: 0 20rpx;
 		/* #ifdef APP-PLUS */
 		padding-top: 40rpx;
 		/* #endif */
@@ -194,7 +199,8 @@ export default {
 	}
 	        
 	.input-wrap {
-		width: 615rpx;
+		/* width: 615rpx; */
+		flex:1;
 		height: 60rpx;
 		padding: 10rpx 60rpx 10rpx 80rpx;
 		box-sizing: border-box;
@@ -207,7 +213,9 @@ export default {
 	    height: 25rpx;
 		line-height: 25rpx;
 		font-size: 26rpx;
-	}        
+	}    
+	.backIcon{height: 60rpx;width: 70rpx;background: url('../../static/images/left_icon.png') no-repeat 5% center;background-size: 50rpx 50rpx;} 
+	.map-wrap{width: 60rpx;margin-left: 25rpx;}   
 	.map-wrap .iconfont {
 	    font-size: 32rpx;
 	    margin-right: 5rpx;
