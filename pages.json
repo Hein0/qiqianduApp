@@ -22,6 +22,13 @@
 			}
 		},
 		{
+		    "path" : "pages/search/searchLists",// 超级搜索列表
+		    "style" : {
+				"navigationBarTitleText": "超级搜索列表",
+				"navigationStyle": "custom"
+			}
+		},
+		{
 		    "path" : "pages/mine/mine",// 个人中心
 		    "style" : {
 				"navigationBarTitleText": "我的",
@@ -41,7 +48,7 @@
 		"color": "#707070",
 		"selectedColor": "#05a6fe",
 		"backgroundColor": "#FFFFFF",
-		"borderStyle": "#707070",
+		"borderStyle": "black",
 		"list": [{
 			"pagePath": "pages/index/index",
 			"iconPath": "static/images/home_nosel.png",

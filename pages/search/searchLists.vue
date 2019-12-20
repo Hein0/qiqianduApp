@@ -19,57 +19,50 @@
 		    </view>
 		    <view class="blank"></view>
 		</view>
-		<!-- 搜索 -->
-		<view class="search-pre">
-			<!-- 历史记录 -->
-			<view class="search-pre-history-wrap">
-				<view class="search-pre-history-head">
-					<text class="textLis">历史记录</text>
-					<text class="clearIcon"></text>
-				</view>
-				<view class="historyList">
-					<text>格局将很快</text>
-					<text>让他人</text>
-					<text>历史记录</text>
-					<text>风格</text>
-					<text>发GV讽德诵功</text>
-					<text>从VBVCD非凡哥</text>
-					<text>3让他个人</text>
-					<text>海景房</text>
-					<text>电饭锅电饭锅</text>
-					<text>东方饭店</text>
-					<text>45让他的风格</text>
-					<text>规划局</text>
-					<text>回家了</text>
-				</view>
-			</view>
-			<!-- 热门搜索 -->
-			<view class="search-pre-host-wrap">
-				<view class="search-pre-history-head">
-					<text class="textLis">热门搜索</text>
-				</view>
-				<view class="historyList">
-					<text>格局将很快</text>
-					<text>让他人</text>
-					<text>历史记录</text>
-					<text>风格</text>
-					<text>发GV讽德诵功</text>
-					<text>从VBVCD非凡哥</text>
-					<text>3让他个人</text>
-					<text>海景房</text>
-					<text>电饭锅电饭锅</text>
-					<text>东方饭店</text>
-					<text>45让他的风格</text>
-					<text>规划局</text>
-					<text>回家了</text>
-				</view>
+		<!-- searchNavWrap -->
+		<view class="searchNavWrap">
+			<view class="searchNav">
+				<view class="navItem active">综合</view>
+				<view class="navItem">销量</view>
+				<view class="navItem">价格</view>
+				<view class="navItem">筛选<text class="icon-Filte"></text></view>
 			</view>
 		</view>
-		<!-- banner -->
-		<banner-item :titleName='"猜你喜欢"'></banner-item>
 		<!-- 列表 -->
 		<view class="bannerGap">
 			<view class="container">
+				<view class="item-warp">
+					<view class="topImg">
+						<image src="../../static/images/activation_my.png" mode=""></image>
+					</view>
+					<view class="textTitle">
+						<text class="channel">渠道</text>
+						标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题
+					</view>
+					<view class="price">
+						<text class="ruling">￥100 <text class="original">￥500</text></text>
+					</view>
+					<view class="salesWrap">
+						<view class="sales">已售100万</view>
+						<view class="bond">100元劵</view>
+					</view>
+				</view>
+				<view class="item-warp">
+					<view class="topImg">
+						<image src="../../static/images/activation_my.png" mode=""></image>
+					</view>
+					<view class="textTitle">
+						<text class="channel">渠道</text>
+						标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题
+					</view>
+					<view class="price">
+						<text class="ruling">￥100 <text class="original">￥500</text></text>
+					</view>
+					<view class="salesWrap">
+						<view class="sales">已售100万</view>
+						<view class="bond">100元劵</view>
+					</view>
+				</view>
 				<view class="item-warp">
 					<view class="topImg">
 						<image src="../../static/images/activation_my.png" mode=""></image>
@@ -141,11 +134,10 @@
   
 </template>
 <script>
-import bannerItem from '@/components/common/banner.vue';
 export default {
 	// 组件
 	components:{
-		bannerItem
+
 	},
 	computed: {
 		
@@ -154,20 +146,18 @@ export default {
 		return {
 			pay: {},
 			status: '',
-			paylists: {},
+			searchlists: {},
 			payname: '',
 			payid: '',
-			value: ''  // 搜索值
+			value: ''
 		};
 	},
-	onLoad: function() {
-
+	onLoad: function(e) {
+		this.value = e.val 
 	},
 	methods: {
 		goSearch() {
-			uni.navigateTo({
-				url: '/pages/search/searchLists?val='+this.value
-			});
+			
 		},
 		// 清除
 		clearVal() {
@@ -253,45 +243,27 @@ export default {
 	}
 	.blank {
 		/* #ifdef APP-PLUS */
-	    height: 126rpx; 
+	    height: 203rpx; 
 		/* #endif */
 		/* #ifdef H5 || MP-WEIXIN */
-		height: 88rpx;
+		height: 165rpx;
 		/* #endif */
 	}
 	
-	/* 搜索 */
-	.search-pre{
-		background-color: #f4f4f4;
-		position: relative;
-		z-index: 1;
-		width: 750rpx;
+	/* searchNavWrap */
+	.searchNavWrap{display: block;position: fixed;left: 0;top: 88rpx;right: 0;z-index: 999;}
+	.searchNav {display: -webkit-box;display: -ms-flexbox; display: flex;-ms-flex-pack: distribute;justify-content: space-around;-ms-flex-flow: row nowrap;border-bottom: 1rpx solid #f4f4f4; background: #FFF;}	
+	.searchNav .navItem {-webkit-box-flex: 1;-moz-flex-grow: 1;-ms-flex-positive: 1;flex-grow: 1; padding: 10rpx 0;text-align: center;font-size: 30rpx;color: #666;letter-spacing: 0;}	
+	.searchNav .navItem.active{color: #0b9aff;}	
+	.icon-Filte {
+	    width: 30rpx;
+	    height: 33rpx;
+	    display: inline-block;
+	    background: url('../../static/images/screen-off@2x.png') no-repeat bottom ;
+	    margin-left: 5rpx;
+	    background-size: 30rpx 26rpx;
 	}
-	.search-pre-history-wrap {
-		background: #fff;
-		width: 710rpx;
-		padding: 0 20rpx	
-	}
-	.search-pre-host-wrap{
-		background: #fff;
-		width: 710rpx;
-		padding: 0 20rpx
-	}
-	.search-pre-history-head{
-		display: flex;
-		padding: 15rpx 0;
-		color: #666;
-	}
-	.search-pre-history-head .textLis{width: 660rpx;height: 50rpx;line-height: 50rpx;color: #666;display: flex;}
-	.search-pre-history-head .clearIcon{
-		width: 50rpx;
-		height: 50rpx;
-		background: url('../../static/images/icon_delete.png') no-repeat center center;
-		background-size: 60% 60%;
-	}
-	.historyList{display: flex;flex-wrap: wrap;padding-bottom: 15rpx;}
-	.historyList text{margin: 10rpx;padding:10rpx 15rpx;border-radius:10rpx;height:35rpx;line-height: 35rpx;background: #e4e4e4;color: #333;}
-	
+		
 	/* 列表 */
 	.bannerGap{padding: 20rpx;width: 710rpx;}
 	.bannerGap .container { display: -webkit-box;display: -ms-flexbox;display: flex;flex-wrap: wrap;}

@@ -98,7 +98,11 @@
 		},
 		// 方法
 		methods: {
-			
+			goSearchPage() {
+				uni.switchTab({
+					url:'/pages/search/search'
+				})
+			},
 			// 点击tap
 			ontabtap(e) {
 				
