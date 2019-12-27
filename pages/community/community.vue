@@ -28,7 +28,7 @@
 				</view>
 				<!-- 内容 -->
 				<view class="itemConten">
-					姨妈快来了吧👀下一次也不远了&lt;br&gt;自己的必需品✨就要主动买！&lt;br&gt;自由点😘日夜混合卫生巾&lt;br&gt;115片到手仅39.9💰&lt;br&gt;超薄无异☁怎么动都舒服
+					姨妈快来了下一次也不远了自己的必需品就要主动买！自由点日夜混合卫生巾115片到手仅39.9超薄无异怎么动都舒服
 				</view>
 				<!-- 图集 -->
 				<view class="itemImg">
@@ -181,7 +181,7 @@
 	.rightConten .rightTitle{width: 415rpx;color:#333;font-size:32rpx;margin-top:10rpx;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;}
 	.rightCon{display:flex;border: 1rpx solid #d4237a;margin-top: 15rpx;background: #FFFFFF;border-radius:15rpx;}
 	.rightCon .itemList{padding: 15rpx;flex: 1;text-align: center;border-right: 1rpx solid #d4237a;}
-	.rightCon .itemList:last-child{border-right: none;background:#d4237a;border-top-right-radius: 15rpx;border-bottom-right-radius: 15rpx;}
+	.rightCon .itemList:last-child{border-right: none;background:#d4237a;border-top-right-radius: 10rpx;border-bottom-right-radius: 10rpx;}
 	.rightCon .itemList:last-child .itemNubs{font-size:28rpx;color:#FFFFFF}
 	.rightCon .itemList:last-child .itemTxt{font-size:28rpx;color:#FFFFFF}
 	.rightCon .itemList .itemNubs{font-size:32rpx;color:#d4237a}
