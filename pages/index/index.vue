@@ -1,7 +1,7 @@
 <template>
 	<view class="indexpage">
 		<!-- 头部 -->
-		<index-header :input='true' rightIcon='rightIcon'></index-header>
+		<index-header :input='true' rightIcon='rightIcon' v-on:goToSearchPage="goSearchPage"></index-header>
 		
 		<scroll-view id="tab-bar" class="scroll-h" :scroll-x="true" :show-scrollbar="false" :scroll-into-view="scrollInto">
 			<view v-for="(tab,index) in tabBars" :key="tab.id" class="uni-tab-item" :id="tab.id" :data-current="index" @click="ontabtap">

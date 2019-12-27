@@ -3,7 +3,7 @@
         <view class="header-wrap">
             <view class="index-header">
                 <text class="address" v-if="leftWords">{{leftWords}}</text>
-                <view class="input-wrap" v-if="input" @click="gotoSearchPage">
+                <view class="input-wrap" v-if="input" @tap="toSearchPage">
                     <input type="text" 
                            placeholder="搜索商品名或粘贴淘宝商品标题"
                            v-model="value"
@@ -38,16 +38,12 @@
             }
         },
         methods: {
-			//跳转
-            gotoSearch: function () {
-                this.$emit('change',this.value)
-            },
 			// 去搜索页面
-			gotoSearchPage() {
-				this.$parent.$parent.goSearchPage()
+			toSearchPage() {
+				this.$emit('goToSearchPage')
 			},
 			// 分类
-            rightClick: function () {
+            rightClick() {
                 // this.$emit("rightClick")
 				// uni.showToast({
 				// 	title:'sss',

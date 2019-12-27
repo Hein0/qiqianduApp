@@ -147,22 +147,60 @@ export default {
 		return {
 			pay: {},
 			status: '',
-			searchlists: {},
+			historyList: [],//历史记录
 			payname: '',
 			payid: '',
 			value: ''
-		};
+		}
 	},
 	onLoad: function(e) {
 		this.value = e.val 
+		const than = this
+		uni.getStorage({
+		    key: 'searchAll_key',
+		    success: function (res) {
+		        than.historyList = res.data
+		    }
+		});
 	},
 	methods: {
 		// 返回
 		navigateBack() {
 			uni.navigateBack()
 		},	
+		//搜索
 		goSearch() {
-			
+			if(this.value !=''){
+				if(this.historyList){
+					var str = false;
+					for (let i=0;i<this.historyList.length;i++) {
+						if(this.historyList[i] === this.value){
+							str = true
+							break
+						}
+					}
+					if(!str){
+						this.historyList.push(this.value)    // 将输入框的值添加到搜索记录数组中存储
+						uni.setStorage({
+							key: 'searchAll_key',
+							data: this.historyList,    
+							success: function () {
+										
+							}
+						})
+					}
+				}else{
+					this.historyList.push(this.value)    // 将输入框的值添加到搜索记录数组中存储
+					uni.setStorage({
+						key: 'searchAll_key',
+						data: this.historyList,    
+						success: function () {
+									
+						}
+					})
+				}
+				
+			}
 		},
 		// 清除
 		clearVal() {
@@ -251,10 +289,10 @@ export default {
 	}
 	.blank {
 		/* #ifdef APP-PLUS */
-	    height: 203rpx; 
+	    height: 193rpx; 
 		/* #endif */
 		/* #ifdef H5 || MP-WEIXIN */
-		height: 165rpx;
+		height: 155rpx;
 		/* #endif */
 	}
 	

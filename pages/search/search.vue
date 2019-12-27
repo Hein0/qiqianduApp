@@ -22,25 +22,13 @@
 		<!-- 搜索 -->
 		<view class="search-pre">
 			<!-- 历史记录 -->
-			<view class="search-pre-history-wrap">
+			<view class="search-pre-history-wrap" v-if="historyList.length>0">
 				<view class="search-pre-history-head">
 					<text class="textLis">历史记录</text>
-					<text class="clearIcon"></text>
+					<text class="clearIcon" @click="clearHistoryList"></text>
 				</view>
 				<view class="historyList">
-					<text>格局将很快</text>
-					<text>让他人</text>
-					<text>历史记录</text>
-					<text>风格</text>
-					<text>发GV讽德诵功</text>
-					<text>从VBVCD非凡哥</text>
-					<text>3让他个人</text>
-					<text>海景房</text>
-					<text>电饭锅电饭锅</text>
-					<text>东方饭店</text>
-					<text>45让他的风格</text>
-					<text>规划局</text>
-					<text>回家了</text>
+					<text v-for="(item,inde) in historyList" :key="inde" @click="selectList(item)">{{item}}</text>
 				</view>
 			</view>
 			<!-- 热门搜索 -->
@@ -49,19 +37,8 @@
 					<text class="textLis">热门搜索</text>
 				</view>
 				<view class="historyList">
-					<text>格局将很快</text>
-					<text>让他人</text>
-					<text>历史记录</text>
-					<text>风格</text>
-					<text>发GV讽德诵功</text>
-					<text>从VBVCD非凡哥</text>
-					<text>3让他个人</text>
-					<text>海景房</text>
-					<text>电饭锅电饭锅</text>
-					<text>东方饭店</text>
-					<text>45让他的风格</text>
-					<text>规划局</text>
-					<text>回家了</text>
+					<text  v-for="(item,inde) in hotWords" :key="inde" @click="selectList(item)">{{item}}</text>
+					
 				</view>
 			</view>
 		</view>
@@ -154,21 +131,93 @@ export default {
 		return {
 			pay: {},
 			status: '',
-			paylists: {},
+			historyList:[],//搜索历史
+			hotWords:["让他人",
+					"历史记录",
+					"风格",
+					"发GV讽德诵功",
+					"从VBVCD非凡哥",
+					"让他个人",
+					"海景房",
+					"电饭锅电饭锅",
+					"东方饭店",
+					"45让他的风格",
+					"规划局",
+					"回家了"],//热门搜索
 			payname: '',
 			payid: '',
 			value: ''  // 搜索值
 		};
 	},
 	onLoad: function() {
-
+		const than = this
+		uni.getStorage({
+		    key: 'searchAll_key',
+		    success: function (res) {
+		        than.historyList = res.data
+		    }
+		});
 	},
 	methods: {
+		// 点击搜索
 		goSearch() {
-			uni.navigateTo({
-				url: '/pages/search/searchLists?val='+this.value
+			if(this.value !==''){
+				if(this.historyList){
+					var str = false;
+					for (let i=0;i<this.historyList.length;i++) {
+						if(this.historyList[i] === this.value){
+							str = true
+							break
+						}
+					}
+					if(!str){
+						this.historyList.push(this.value)    // 将输入框的值添加到搜索记录数组中存储
+						uni.setStorage({
+							key: 'searchAll_key',
+							data: this.historyList,    
+							success: function () {
+										
+							}
+						})
+					}
+				}else{
+					this.historyList.push(this.value)    // 将输入框的值添加到搜索记录数组中存储
+					uni.setStorage({
+						key: 'searchAll_key',
+						data: this.historyList,    
+						success: function () {
+									
+						}
+					})
+				}
+				
+				uni.navigateTo({
+					url: '/pages/search/searchLists?val='+this.value
+				});
+			}else if(this.value ===''){
+				uni.showToast({
+					title:'请输入搜索内容！',
+					icon:'none',
+					duration:2000
+				})
+			}
+			
+		},
+		// 清除历史记录
+		clearHistoryList(){
+			this.historyList = []
+			uni.removeStorage({
+				key: 'searchAll_key',
+				success: function (res) {
+					console.log('success');
+				}
 			});
 		},
+		// 选中搜索记录 搜索热门
+		selectList(val){
+			this.value = val
+			this.goSearch()
+		},	
 		// 清除
 		clearVal() {
 			this.value = ''

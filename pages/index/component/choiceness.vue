@@ -284,11 +284,12 @@
 	.banner-gap .container .item-warp {
 		width: 353rpx;
 		padding: 6rpx;
-	}
-	.banner-gap .container .item-warp image {
 		-webkit-box-shadow: 0 0 5rpx 0 rgba(62,62,62,.07);
 		box-shadow: 0 0 5rpx 0 rgba(62,62,62,.07);
-		width: 100%;height: 150rpx;
+	}
+	.banner-gap .container .item-warp image {
+		width: 100%;
+		height: 150rpx;
 	}
 	
 	/* 列表 */
