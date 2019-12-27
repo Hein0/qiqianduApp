@@ -181,7 +181,7 @@
 	.rightConten .rightTitle{width: 415rpx;color:#333;font-size:32rpx;margin-top:10rpx;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;}
 	.rightCon{display:flex;border: 1rpx solid #d4237a;margin-top: 15rpx;background: #FFFFFF;border-radius:15rpx;}
 	.rightCon .itemList{padding: 15rpx;flex: 1;text-align: center;border-right: 1rpx solid #d4237a;}
-	.rightCon .itemList:last-child{border-right: none;background:#d4237a;}
+	.rightCon .itemList:last-child{border-right: none;background:#d4237a;border-top-right-radius: 15rpx;border-bottom-right-radius: 15rpx;}
 	.rightCon .itemList:last-child .itemNubs{font-size:28rpx;color:#FFFFFF}
 	.rightCon .itemList:last-child .itemTxt{font-size:28rpx;color:#FFFFFF}
 	.rightCon .itemList .itemNubs{font-size:32rpx;color:#d4237a}
