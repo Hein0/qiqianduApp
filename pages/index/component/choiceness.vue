@@ -4,14 +4,8 @@
             <view class="page-section swiper">
                 <view class="page-section-spacing">
                     <swiper class="swiper" :indicator-dots="indicatorDots" :circular="true" :autoplay="autoplay" :interval="interval" :duration="duration" indicator-color="rgba(0, 0, 0, .3)" indicator-active-color="#FFFFFF">
-                        <swiper-item>
-                            <image style="width: 100%;height:100%;" src="../../static/images/ssd.jpg" mode=""></image>
-                        </swiper-item>
-                        <swiper-item>
-                            <image style="width: 100%;height:100%;" src="../../static/images/ssd.jpg" mode=""></image>
-                        </swiper-item>
-                        <swiper-item>
-                            <image style="width: 100%;height:100%;" src="../../static/images/ssd.jpg" mode=""></image>
+                        <swiper-item v-for="(item,index) in imgList" :key="item.index">
+                            <image style="width: 100%;height:100%;" :src="item" @tap="preview" :id="imgList[index]"></image>
                         </swiper-item>
                     </swiper>
                 </view>
@@ -102,7 +96,7 @@
 		<!-- 列表 -->
 		<view class="goodList">
 			<view class="wrapper">
-				<view class="item">
+				<view class="item" @click="gotoDetail">
 					<view class="isub">
 						<view class="topImg">
 							<image src="../../static/images/activation_my.png" mode=""></image>
@@ -120,7 +114,7 @@
 						</view>
 					</view>
 				</view>
-				<view class="item">
+				<view class="item" @click="gotoDetail">
 					<view class="isub">
 						<view class="topImg">
 							<image src="../../static/images/activation_my.png" mode=""></image>
@@ -151,16 +145,34 @@
 		},
 	    data() {
 	        return {
-	            background: ['color1', 'color2', 'color3'],
 	            indicatorDots: true, //是否显示面板指示点
 	            autoplay: true, //是否自动切换
 	            interval: 2000, //自动切换时间间隔
 	            duration: 500, // 滑动时长
+				imgList:[
+					require("../../../static/images/ssd.jpg"),
+					require("../../../static/images/activation_my.png"),
+					require("../../../static/images/ssd.jpg")]
 					
 	        }
 	    },
 	    methods: {
-	        
+			// 点击大图
+	        preview(res){  
+				let myindex = res.currentTarget.id;  
+				console.log(myindex)
+				uni.previewImage({  
+					urls:this.imgList,  
+					current:myindex  
+				})  
+			},
+			// 去详情页
+			gotoDetail(){
+				uni.navigateTo({
+					url: '/pages/index/detail'
+				});
+			}	
+			
 	    }
 	}
 </script>

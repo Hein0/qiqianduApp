@@ -253,7 +253,9 @@ export default {
 	}
 	        
 	.input-wrap {
-		width: 615rpx;
+		/* width: 615rpx; */
+		display: flex;
+		flex: 1;
 		height: 60rpx;
 		padding: 10rpx 60rpx 10rpx 80rpx;
 		box-sizing: border-box;
@@ -263,16 +265,18 @@ export default {
 		position: relative;
 	}
 	.input-wrap .inputSeca {
-	    height: 25rpx;
-		line-height: 25rpx;
+	    height: 31rpx;
+		width: 100%;
+		line-height: 31rpx;
 		font-size: 26rpx;
-	}        
+	}   
+	.map-wrap{margin-left: 25rpx;}	 
 	.map-wrap .iconfont {
-	    font-size: 32rpx;
+	    font-size: 34rpx;
 	    margin-right: 5rpx;
 	}    
 	.map-wrap text {
-	    font-size: 26rpx;
+	    font-size: 30rpx;
 	}
 	.input-wrap .iconfangdajing {
 		width: 30rpx;

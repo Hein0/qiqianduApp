@@ -29,14 +29,14 @@
 			}
 		},
 		{
-		    "path" : "pages/mine/mine",// 个人中心
+		    "path" : "pages/index/detail",// 商品详情
 		    "style" : {
-				"navigationBarTitleText": "我的",
+				"navigationBarTitleText": "商品详情",
 				"navigationStyle": "custom"
 			}
 		},
 		{
-		    "path" : "pages/index/view",// hehe
+		    "path" : "pages/mine/mine",// 个人中心
 		    "style" : {
 				"navigationBarTitleText": "我的",
 				"navigationStyle": "custom"

@@ -93,8 +93,8 @@
 		position: relative;
 	}
 	.input-wrap .inputSeca {
-	    height: 25rpx;
-		line-height: 25rpx;
+	    height: 31rpx;
+		line-height: 31rpx;
 		font-size: 26rpx;
 	}
     .input-wrap text {

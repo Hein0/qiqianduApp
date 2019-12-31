@@ -248,18 +248,19 @@ export default {
 		position: relative;
 	}
 	.input-wrap .inputSeca {
-	    height: 25rpx;
-		line-height: 25rpx;
+	    height: 31rpx;
+		width: 100%;
+		line-height: 31rpx;
 		font-size: 26rpx;
 	}    
 	.backIcon{height: 60rpx;width: 70rpx;background: url('../../static/images/left_icon.png') no-repeat 5% center;background-size: 50rpx 50rpx;} 
-	.map-wrap{width: 60rpx;margin-left: 25rpx;}   
+	.map-wrap{margin-left: 25rpx;}   
 	.map-wrap .iconfont {
-	    font-size: 32rpx;
+	    font-size: 34rpx;
 	    margin-right: 5rpx;
 	}    
 	.map-wrap text {
-	    font-size: 26rpx;
+	    font-size: 30rpx;
 	}
 	.input-wrap .iconfangdajing {
 		width: 30rpx;
@@ -289,17 +290,29 @@ export default {
 	}
 	.blank {
 		/* #ifdef APP-PLUS */
-	    height: 193rpx; 
+	    height: 203rpx; 
 		/* #endif */
 		/* #ifdef H5 || MP-WEIXIN */
-		height: 155rpx;
+		height: 165rpx;
 		/* #endif */
 	}
 	
 	/* searchNavWrap */
-	.searchNavWrap{display: block;position: fixed;left: 0;top: 88rpx;right: 0;z-index: 999;}
+	.searchNavWrap{
+		display: block;
+		position: fixed;
+		left: 0;
+		/* #ifdef APP-PLUS */
+		top: 120rpx;
+		/* #endif */
+		/* #ifdef H5 || MP-WEIXIN */
+		top: 88rpx;
+		/* #endif */
+		right: 0;
+		z-index: 999;
+	}
 	.searchNav {display: -webkit-box;display: -ms-flexbox; display: flex;-ms-flex-pack: distribute;justify-content: space-around;-ms-flex-flow: row nowrap;border-bottom: 1rpx solid #f4f4f4; background: #FFF;}	
-	.searchNav .navItem {-webkit-box-flex: 1;-moz-flex-grow: 1;-ms-flex-positive: 1;flex-grow: 1; padding: 10rpx 0;text-align: center;font-size: 30rpx;color: #666;letter-spacing: 0;}	
+	.searchNav .navItem {-webkit-box-flex: 1;-moz-flex-grow: 1;-ms-flex-positive: 1;flex-grow: 1; padding: 20rpx 0;text-align: center;font-size: 30rpx;color: #666;letter-spacing: 0;}	
 	.searchNav .navItem.active{color: #0b9aff;}	
 	.icon-Filte {
 	    width: 30rpx;
