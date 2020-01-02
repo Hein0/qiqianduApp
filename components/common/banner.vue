@@ -2,18 +2,25 @@
 	<view class="bannerConmon">
 		<!-- banner标题 -->
 		<view class="bannerWrap">
-			<text class="left"></text>
+			<text class="left" v-if="leftrightMenu"></text>
 			<text class="titleName">{{titleName}}</text>
-			<text class="right"></text>
+			<text class="right" v-if="leftrightMenu"></text>
 		</view>
 	</view>
 </template>
 
 <script>
 	export default {
-		props:[
-			'titleName'
-		],
+		props:{
+			titleName: {
+				type:String,
+				default:''
+			},
+			leftrightMenu: {
+				type: [Boolean, String],
+				default:true
+			}
+		},
 		data() {
 		    return {
 			
