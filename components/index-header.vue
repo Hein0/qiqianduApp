@@ -44,14 +44,9 @@
 			},
 			// 分类
             rightClick() {
-                // this.$emit("rightClick")
-				// uni.showToast({
-				// 	title:'sss',
-				// 	center:'ss'
-				// })
-				uni.switchTab({
-					url: '/pages/search/search'
-				})
+				uni.navigateTo({
+				    url: '/pages/index/classify'
+				});
             }
         }
     }

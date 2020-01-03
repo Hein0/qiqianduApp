@@ -21,10 +21,10 @@
 		    </view>
 		</view>
 		<!-- banner图 -->
-		<view class="uni-padding-wrap">
-		    <view class="page-section swiper">
+		<view class="padding-wrap">
+		    <view class="page-section">
 		        <view class="page-section-spacing">
-		            <swiper class="swiper" :indicator-dots="indicatorDots" :circular="true" :autoplay="autoplay" :interval="interval" :duration="duration" indicator-color="rgba(0, 0, 0, .3)" indicator-active-color="#FFFFFF">
+		            <swiper class="swiper-container" :indicator-dots="indicatorDots" :circular="true" :autoplay="autoplay" :interval="interval" :duration="duration" indicator-color="rgba(0, 0, 0, .3)" indicator-active-color="#FFFFFF">
 		                <swiper-item v-for="(item,index) in imgList" :key="item.index">
 		                    <image style="width: 100%;height:100%;" :src="item" @tap="preview" :id="imgList[index]"></image>
 		                </swiper-item>
@@ -60,7 +60,7 @@
 		<!-- banner -->
 		<banner-item :titleName='"猜你喜欢"' :leftrightMenu="false"></banner-item>
 		<view class="recommendWrap">
-			<scroll-view class="scroll-view_H" show-scrollba="true" scroll-x="true" @scroll="scroll" scroll-left="120">
+			<scroll-view class="scroll-view_H" show-scrollba="true" scroll-x="true" @scroll="scroll" scroll-left="50">
 				<view id="demo1" class="scroll-view-item_H uni-bg-red">猜你喜欢猜你喜欢猜你喜欢</view>
 				<view id="demo2" class="scroll-view-item_H uni-bg-green">猜你喜欢猜你喜欢猜你喜欢</view>
 				<view id="demo3" class="scroll-view-item_H uni-bg-blue">猜你喜欢猜你喜欢猜你喜欢</view>
@@ -81,7 +81,7 @@
 			<view class="partition"></view>
 			<view class="footer">
 				<view class="footerIcon">
-					<view class="souye flexs">
+					<view class="souye flexs" @tap="goHome">
 						<view class="syIcon"></view>
 						<view class="syText">首页</view>
 					</view>
@@ -139,6 +139,12 @@
 			navigateBack() {
 				uni.navigateBack()
 			},	
+			// 首页
+			goHome(){
+				uni.switchTab({
+					url:"/pages/index/index"
+				})
+			},	
 			// 点击大图
 		    preview(res){  
 				let myindex = res.currentTarget.id;  
@@ -177,7 +183,8 @@
 </script>
 
 <style>
-	page{background: #f4f4f4;}
+	page{background: #f4f4f4 !important;}
+	.swiper-container{min-height: 80vw;}
 	/* start pageHead */
 	.header-wrap {
 	    width: 100%;
@@ -215,7 +222,7 @@
 	.backIcon{height: 60rpx;width: 60rpx;border-radius: 50%;background: url('../../static/images/left_icon.png') no-repeat 5% center;background-size: 50rpx 50rpx;} 
 	.menu{height: 60rpx;width: 60rpx;border-radius: 50%;background: url('../../static/images/icon/spriteIcon.png') no-repeat center center;background-size: 50rpx 50rpx;}   
 	
-	.uni-padding-wrap{width: 750rpx;padding: 0;}
+	.padding-wrap{width: 750rpx;display: block;height: 100%;}
 	.infoWrap{padding:15rpx 15rpx 20rpx;background:#FFFFFF;}
 	.titleWrap{display: flex;align-items: center;justify-content: space-between;padding: 10rpx 0;}
 	.leftNuber .current{font-size:38rpx;color: #f33;}
@@ -231,7 +238,7 @@
 	.recommendWrap{display: flex;width: 100%; white-space: nowrap;}
 	.scroll-view-item_H {
 	    display: inline-block;
-	    width: 100%;
+	    width: auto;
 	    height: 150px;
 	    line-height: 150px;
 	    text-align: center;

@@ -162,6 +162,7 @@
 		width: 100%;
 		height: 100%;
 	}
+	.uni-swiper{min-height: 100vm;}
 	.indexpage {
 		display: flex;
 		display: -webkit-flex;
