@@ -331,8 +331,8 @@ export default {
 	.bannerGap .container .item-warp .topImg{margin-bottom: 10rpx;display: flex;align-items: center;justify-content: center;}
 	.bannerGap .container .item-warp .topImg image{width: 280rpx;height: 300rpx;}
 	.bannerGap .container .item-warp .textTitle{display: -webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;font-size:30rpx;overflow: hidden;line-height: 1.4;}
-	.bannerGap .container .item-warp .price{display: flex;}
-	.bannerGap .container .item-warp .price .ruling{color: #fe6900;font-size:32rpx}
+	.bannerGap .container .item-warp .price{display: flex;padding: 10rpx 0rpx;}
+	.bannerGap .container .item-warp .price .ruling{color: #fe6900;font-size:34rpx}
 	.bannerGap .container .item-warp .price .ruling .original{color: #555555; text-decoration: line-through;font-size:26rpx}
 	.salesWrap{display: flex;}
 	.salesWrap .sales{font-size: 28rpx;color:#666;flex: 1;}

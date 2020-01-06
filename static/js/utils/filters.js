@@ -78,7 +78,37 @@ export function cutStr (val) {
   return arr[0] + '.' + arr[1].substring(0, 2)
 }
 
+//渠道类型名称
+export function shopType (type) {
+	let typestr = ''
+	switch(type) {
+	    case 'B':
+	        typestr = '天猫'
+	        break;
+	    case 'C':
+	        typestr = '淘宝'
+	        break;
+	    default:
+	        typestr = ''
+	} 
+	return typestr
+}
 
-
+// 转换文字
+ /**数字转整数 如 10000 转为1万
+ * @param {需要转化的数} num 
+ * @param {需要保留的小数位数} 1 
+ */
+export function tranNumber (nuber) {
+	let numStr = nuber.toString()
+	// 十万以内直接返回 
+	if (numStr.length < 5) {
+		return numStr;
+	}else if (numStr.length >= 5) {//大于6位数是十万 (以10W分割 10W以下全部显示)
+		let decimal = numStr.substring(numStr.length - 4, numStr.length - 4 + 1)
+		return parseInt(numStr / 10000) + '.' + decimal;
+	}
+	
+}
 
 
