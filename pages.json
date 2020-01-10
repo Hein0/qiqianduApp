@@ -18,14 +18,16 @@
 			"path": "pages/index/classifyLists", // 分类列表
 			"style": {
 				"navigationBarTitleText": "商品列表",
-				"navigationStyle": "custom"
+				"navigationStyle": "custom",
+				"enablePullDownRefresh": true  //允许下拉刷新
 			}
 		},
 		{
 		    "path" : "pages/community/community",// 仟度圈
 		    "style" : {
 				"navigationBarTitleText": "仟度圈",
-				"navigationStyle": "custom"
+				"navigationStyle": "custom",
+				"enablePullDownRefresh": true  //允许下拉刷新
 			}
 		},
 		{
@@ -39,7 +41,8 @@
 		    "path" : "pages/search/searchLists",// 超级搜索列表
 		    "style" : {
 				"navigationBarTitleText": "超级搜索列表",
-				"navigationStyle": "custom"
+				"navigationStyle": "custom",
+				"enablePullDownRefresh": true  //允许下拉刷新
 			}
 		},
 		{

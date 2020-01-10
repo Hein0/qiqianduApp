@@ -112,7 +112,7 @@
 		position: absolute;
 		top:15rpx;
 		background: url('../static/images/sousuo.png') no-repeat center center;
-		background-size: 30rpx 30rpx;
+		background-size: 28rpx 28rpx;
 	}	
     .rightIcon{
 		width: 60rpx;

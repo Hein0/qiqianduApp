@@ -15,76 +15,95 @@
 		<!-- 头部 END -->
 		<!-- 列表 -->
 		<view class="listWrap">
-			<view class="listItem">
+			<view class="listItem" v-if="tabCurrentIndex==0" v-for="(item,index) in handpickList" :key="index">
 				<view class="itemTop">
 					<image src="../../static/images/icon/sc_default.png" mode=""></image>
 					<view class="titleWrap">
-						<view class="titleName">名字</view>
-						<view class="tag">标签</view>
+						<view class="titleName">仟度</view>
+						<view class="tag">{{item.show_time | before_time}}</view>
 					</view>
 					<view class="share">
-						1000
+						{{item.dummy_click_statistics}}
 					</view>
 				</view>
 				<!-- 内容 -->
 				<view class="itemConten">
-					姨妈快来了下一次也不远了自己的必需品就要主动买！自由点日夜混合卫生巾115片到手仅39.9超薄无异怎么动都舒服
+					<rich-text :nodes="item.show_content"></rich-text>
 				</view>
 				<!-- 图集 -->
 				<view class="itemImg">
-					<view class="boxImg">
-						<image src="../../static/images/activation_my.png" mode=""></image>
-					</view>
-					<view class="boxImg">
-						<image src="../../static/images/activation_my.png" mode=""></image>
-					</view>
-					<view class="boxImg">
-						<image src="../../static/images/activation_my.png" mode=""></image>
-					</view>
-					<view class="boxImg">
-						<image src="../../static/images/activation_my.png" mode=""></image>
+					<view class="boxImg" v-for="(items,indx) in item.itempic" :key="indx">
+						<image :src="items" mode="" @tap="preview($event,item.itempic)" :id="item.itempic[indx]"></image>
 					</view>
 				</view>
 				<!-- 劵 -->
 				<view class="itemBottom">
-					<view class="boxBottom">
-						<image src="../../static/images/activation_my.png" mode=""></image>
+					<view class="boxBottom" @tap="gotoDetail(item.itemid)"> 
+						<image :src="item.sola_image" mode=""></image>
 						<view class="rightConten">
-							<view class="rightTitle">标题啊啊标题啊啊标题啊啊标题啊啊标题啊啊标题啊啊</view>
+							<view class="rightTitle">{{item.itemtitle}}</view>
 							<view class="rightCon">
 								<view class="itemList">
-									<view class="itemNubs">￥0.00</view>
+									<view class="itemNubs">￥{{item.itemendprice}}</view>
 									<view class="itemTxt">券后价</view>
 								</view>
 								<view class="itemList">
-									<view class="itemNubs">￥100</view>
+									<view class="itemNubs">￥{{item.couponmoney}}</view>
 									<view class="itemTxt">券额</view>
 								</view>
 								<view class="itemList">
-									<view class="itemNubs">点击</view>
-									<view class="itemTxt">分享</view>
+									<view class="itemNubs">领劵</view>
+									<view class="itemTxt">购买</view>
 								</view>
 							</view>
 						</view>
 					</view>
 				</view>
 			</view>
-			
+			<!--  好货专场  -->
+			<view class="listItem" v-if="tabCurrentIndex==1" v-for="(item,index) in specialList" :key="index">
+				<view class="itemTop">
+					<image src="../../static/images/icon/sc_default.png" mode=""></image>
+					<view class="titleWrap">
+						<view class="titleName">仟度</view>
+						<view class="tag">{{item.addtime | before_time}}</view>
+					</view>
+					<view class="share">
+						{{item.share_times}} 
+					</view>
+				</view>
+				<!-- 内容 -->
+				<view class="itemConten">
+					<rich-text :nodes="item.show_text"></rich-text>
+				</view>
+				<!-- 图集 -->
+				<view class="itemImg">
+					<view class="boxImg" v-for="(items,indx) in item.item_data" :key="indx" v-if="items.itemid" @tap="gotoDetail(items.itemid)">
+						<image :src="items.itempic" mode=""></image>
+						<view class="itemendprice">劵后￥{{items.itemendprice}}</view>
+					</view>
+				</view>
+				
+			</view>
 		</view>
+		<uni-load-more  :loadingType="loadingType" :contentText="contentText" ></uni-load-more>
 	</view>
 </template>
 
 <script>
+	import uniLoadMore from '@/components/common/uni-load-more.vue';
 	export default {
 		// 组件
 		components:{
-	
+			uniLoadMore
 		},
+		// 计算属性
 		computed: {
 			
 		},
 		data() {
 			return {
+				min_id:1, // 分页数
 				tabCurrentIndex: 0,
 				navList:[
 					{
@@ -94,16 +113,167 @@
 					{
 						state:1,
 						text:'好货专场'
+					},
+					{
+						state:2,
+						text:'精品专题'
 					}
-				]
+				],
+				imgList:[], // 查看大图
+				handpickList:[] ,// 精选单品
+				specialList:[], // 好货专场
+				loadingText: '加载中...',
+				loadingType: 0,//定义加载方式 0---contentdown  1---contentrefresh 2---contentnomore
+				contentText: {
+					contentdown:'上拉显示更多',
+					contentrefresh: '正在加载...',
+					contentnomore: '已经到底啦~',
+				}
 			}
+		},
+		// 下拉刷新
+		onPullDownRefresh() {
+			//下拉刷新的时候请求一次数据
+			this.gethandpickList();
+		},
+		// 上拉加载
+		onReachBottom() {
+			//触底的时候请求数据，即为上拉加载更多
+			//为了更加清楚的看到效果，添加了定时器
+			let self = this
+			if (self.timer != null) {
+				clearTimeout(self.timer);
+			}
+			self.timer = setTimeout(function() {
+				self.getmoreData();
+			}, 300);
+		},
+		// 挂载完成
+		mounted() {
+			//获取列表数据
+			this.cuttab(this.tabCurrentIndex);
 		},
 		// 方法
 		methods: {
 			// 切换
 			cuttab(index){
+				this.min_id = 1
 				this.tabCurrentIndex = index
-			}	
+				switch(this.tabCurrentIndex){
+					case 0:// 精选单品
+						this.handpickList = []
+						this.gethandpickList()
+						break;
+					case 1: //好货专场
+						this.specialList = []
+						this.getspecialList()
+						break;
+					default:
+						break;
+				}
+				
+			},
+			// 
+			//获取精选单品列表数据
+			gethandpickList() {
+				let self = this
+				self.min_id = 1;
+				self.loadingType = 0;
+				uni.showNavigationBarLoading();
+				this.$tools.apiGet('api/selected_item/apikey/'+this.CONFIGAPI.apikey+'/min_id/'+this.min_id).then(function(res){
+					if(res.code == 1){
+						self.min_id = res.min_id;//获取下一页的参数值
+						self.handpickList = self.disposeText(res.data)
+					}
+				})
+			},	
+			// 好货专场
+			getspecialList(){
+				let self = this
+				self.min_id = 1;
+				self.loadingType = 0;
+				uni.showNavigationBarLoading();
+				this.$tools.apiGet('api/subject_hot/apikey/'+this.CONFIGAPI.apikey+'/min_id/'+this.min_id).then(function(res){
+					if(res.code == 1){
+						self.min_id = res.min_id;//获取下一页的参数值
+						self.specialList = self.disposeText2(res.data)
+					}
+				})
+			},
+			// 加载更多
+			getmoreData() {
+				let self = this,urls=''
+				if (self.loadingType !== 0) {//loadingType!=0;直接返回
+					return false;
+				}
+				if(self.tabCurrentIndex ==0){
+					urls='api/selected_item/apikey/'+this.CONFIGAPI.apikey+'/min_id/'+this.min_id
+				}else if(self.tabCurrentIndex ==1){
+					urls='api/subject_hot/apikey/'+this.CONFIGAPI.apikey+'/min_id/'+this.min_id
+				}
+				self.loadingType = 1;
+				uni.showNavigationBarLoading();//显示加载动画
+				this.$tools.apiGet(urls).then(function(res){
+					if (res.min_id == 0) {//没有数据
+						self.loadingType = 2;
+						uni.hideNavigationBarLoading();//关闭加载动画
+						return;
+					}
+					self.min_id = res.min_id;//获取下一页的参数值
+					if(self.tabCurrentIndex ==0){
+						self.handpickList = self.handpickList.concat(self.disposeText(res.data));//将数据拼接在一起
+					}else if(self.tabCurrentIndex ==1){
+						self.specialList = self.specialList.concat(self.disposeText2(res.data));//将数据拼接在一起
+					}
+					self.loadingType = 0;//将loadingType归0重置
+					uni.hideNavigationBarLoading();//关闭加载动画
+				})
+			},
+			// 处理富文本
+			disposeText(datas){
+				let self = this
+				let lists = []
+				for (let i = 0;i < datas.length;i++) {
+				    datas[i].show_content = datas[i].show_content
+				        .replace(/&lt;/g, "<")
+				        .replace(/&gt;/g, ">")
+				        .replace(/&amp;/g, "&")
+				        .replace(/&quot;/g, '"')
+				        .replace(/&apos;/g, "'");
+				    lists.push(datas[i]);
+				}
+				return lists
+			},
+			// 处理富文本2
+			disposeText2(datas){
+				let self = this
+				let lists = []
+				for (let i = 0;i < datas.length;i++) {
+				    datas[i].show_text = datas[i].show_text
+				        .replace(/&lt;/g, "<")
+				        .replace(/&gt;/g, ">")
+				        .replace(/&amp;/g, "&")
+				        .replace(/&quot;/g, '"')
+				        .replace(/&apos;/g, "'");
+				    lists.push(datas[i]);
+				}
+				return lists
+			},
+			// 点击大图
+			preview(res,itempic){ 
+				let myindex = res.currentTarget.id;  
+				this.imgList = itempic
+				uni.previewImage({  
+					urls:this.imgList,  
+					current:myindex  
+				})  
+			},
+			// 去详情页
+			gotoDetail(id){
+				uni.navigateTo({
+					url: '/pages/index/detail?itemid='+id
+				});
+			}
 		}
 		
 	}	
@@ -168,11 +338,13 @@
 	.itemTop{display: flex;}
 	.itemTop image{width: 80rpx;height: 80rpx;margin-right: 20rpx;border-radius: 100%;}
 	.titleWrap{flex: 1;}
-	.share{width: 100rpx;height:35rpx;line-height: 35rpx;font-size:28rpx;color:#ffffff;padding:10rpx 15rpx 10rpx 65rpx;border-radius: 30rpx;background:#05a6fe url(../../static/images/icon/fx_icon.png) no-repeat 13% center;background-size:35rpx 35rpx}
+	.titleWrap .tag{font-size: 26rpx;color: #666;}
+	.share{width: 85rpx;height:35rpx;line-height: 35rpx;font-size:28rpx;color:#ffffff;padding:10rpx 15rpx 10rpx 65rpx;border-radius: 30rpx;background:#FF9500 url(../../static/images/icon/fx_icon.png) no-repeat 13% center;background-size:35rpx 35rpx}
 	.itemConten{padding:15rpx;font-size: 30rpx;}
 	.itemImg{padding:10rpx 0rpx;display: flex;flex-wrap: wrap;}
-	.itemImg .boxImg{width: 208rpx;margin-left:15rpx;margin-bottom: 10rpx;}
+	.itemImg .boxImg{width: 208rpx;margin-left:15rpx;margin-bottom: 10rpx;position: relative;}
 	.itemImg .boxImg image{width: 100%;height: 208rpx;}
+	.itemImg .boxImg .itemendprice{text-align: center;color: #FFFFFF;font-size:26rpx;background: #e42424;position: absolute;bottom:0rpx;left: 0;right: 0;z-index: 2;padding:10rpx 0}
 	
 	.itemBottom{border-radius: 20rpx;}
 	.boxBottom{padding: 15rpx;background: #f4f4f4;display: flex;border-radius: 20rpx;}
@@ -184,7 +356,7 @@
 	.rightCon .itemList:last-child{border-right: none;background:#d4237a;border-top-right-radius: 10rpx;border-bottom-right-radius: 10rpx;}
 	.rightCon .itemList:last-child .itemNubs{font-size:28rpx;color:#FFFFFF}
 	.rightCon .itemList:last-child .itemTxt{font-size:28rpx;color:#FFFFFF}
-	.rightCon .itemList .itemNubs{font-size:32rpx;color:#d4237a}
-	.rightCon .itemList .itemTxt{font-size:28rpx;color:#333}
+	.rightCon .itemList .itemNubs{font-size:28rpx;color:#d4237a}
+	.rightCon .itemList .itemTxt{font-size:25rpx;color:#333}
 	
 </style>

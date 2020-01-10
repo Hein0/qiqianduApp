@@ -94,13 +94,15 @@ export function shopType (type) {
 	return typestr
 }
 
+
 // 转换文字
  /**数字转整数 如 10000 转为1万
  * @param {需要转化的数} num 
  * @param {需要保留的小数位数} 1 
  */
-export function tranNumber (nuber) {
-	let numStr = nuber.toString()
+export function tranNumber (nubers) {
+	if (!nubers) return '0'
+	let numStr = nubers.toString()
 	// 十万以内直接返回 
 	if (numStr.length < 5) {
 		return numStr;
@@ -111,4 +113,35 @@ export function tranNumber (nuber) {
 	
 }
 
+// 时间戳  Y + M + D + h + m + s;
+ export function format(timestamp) {
+	var date = new Date(timestamp * 1000); //时间戳为10位需*1000，时间戳为13位的话不需乘1000
+	var Y = date.getFullYear() + "-";
+	var M =
+	  (date.getMonth() + 1 < 10
+		? "0" + (date.getMonth() + 1)
+		: date.getMonth() + 1) + "-";
+	var D = date.getDate() + " ";
+	var h = date.getHours() + ":";
+	var m = date.getMinutes() + ":";
+	var s = date.getSeconds();
+	return Y + M + D + h + m + s;
+	// return Y + M + D ;
+ }
 
+/* 
+ *时间格式化 倒序时间(刚刚，几分钟前，几个小时前，几天前，几周前，几个月前等)
+ */
+export function before_time(dateTimeStamp) {
+	let result;
+	var mistiming=Math.round(new Date() / 1000)-dateTimeStamp;
+	    var arrr = ['年','个月','星期','天','小时','分钟','秒'];
+	    var arrn = [31536000,2592000,604800,86400,3600,60,1];
+	    for(var i=6;i>=0;i--){
+	        var inm = Math.floor(mistiming/arrn[i]);
+	        if(inm!=0){
+	            result = inm+arrr[i]+'前';
+	        }
+	    }
+	return result;
+}

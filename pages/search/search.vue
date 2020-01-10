@@ -37,80 +37,32 @@
 					<text class="textLis">热门搜索</text>
 				</view>
 				<view class="historyList">
-					<text  v-for="(item,inde) in hotWords" :key="inde" @click="selectList(item)">{{item}}</text>
-					
+					<text  v-for="(item,inde) in hotWords" v-if="inde<20" :key="inde" @click="selectList(item.keyword)">{{item.keyword}}</text>
 				</view>
 			</view>
 		</view>
 		<!-- banner -->
-		<banner-item :titleName='"猜你喜欢"'></banner-item>
+		<banner-item :titleName='"今日值得买"'></banner-item>
 		<!-- 列表 -->
 		<view class="bannerGap">
 			<view class="container">
-				<view class="item-warp">
+				<view class="item-warp" v-for="(item,index) in likeList" :key="index" @tap="gotoDetail(item.itemid)">
 					<view class="topImg">
-						<image src="../../static/images/activation_my.png" mode=""></image>
+						<image :src="item.itempic" mode=""></image>
 					</view>
 					<view class="textTitle">
-						<text class="channel">渠道</text>
-						标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题
+						<text class="channel">{{item.shoptype | shopType}}</text>
+						{{item.itemtitle}}
 					</view>
 					<view class="price">
-						<text class="ruling">￥100 <text class="original">￥500</text></text>
+						<text class="ruling">￥{{item.itemendprice}} <text class="original">￥{{item.itemprice}}</text></text>
 					</view>
 					<view class="salesWrap">
-						<view class="sales">已售100万</view>
-						<view class="bond">100元劵</view>
+						<view class="sales">已售{{item.itemsale | tranNumber}}{{item.itemsale.length >=5 ? '万' : ''}}</view>
+						<view class="bond">{{item.couponmoney}}元劵</view>
 					</view>
 				</view>
-				<view class="item-warp">
-					<view class="topImg">
-						<image src="../../static/images/activation_my.png" mode=""></image>
-					</view>
-					<view class="textTitle">
-						<text class="channel">渠道</text>
-						标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题
-					</view>
-					<view class="price">
-						<text class="ruling">￥100 <text class="original">￥500</text></text>
-					</view>
-					<view class="salesWrap">
-						<view class="sales">已售100万</view>
-						<view class="bond">100元劵</view>
-					</view>
-				</view>
-				<view class="item-warp">
-					<view class="topImg">
-						<image src="../../static/images/activation_my.png" mode=""></image>
-					</view>
-					<view class="textTitle">
-						<text class="channel">渠道</text>
-						标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题
-					</view>
-					<view class="price">
-						<text class="ruling">￥100 <text class="original">￥500</text></text>
-					</view>
-					<view class="salesWrap">
-						<view class="sales">已售100万</view>
-						<view class="bond">100元劵</view>
-					</view>
-				</view>
-				<view class="item-warp">
-					<view class="topImg">
-						<image src="../../static/images/activation_my.png" mode=""></image>
-					</view>
-					<view class="textTitle">
-						<text class="channel">渠道</text>
-						标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题
-					</view>
-					<view class="price">
-						<text class="ruling">￥100 <text class="original">￥500</text></text>
-					</view>
-					<view class="salesWrap">
-						<view class="sales">已售100万</view>
-						<view class="bond">100元劵</view>
-					</view>
-				</view>
+				
 			</view>
 		</view>
 		
@@ -129,25 +81,18 @@ export default {
 	},
 	data() {
 		return {
-			pay: {},
-			status: '',
 			historyList:[],//搜索历史
-			hotWords:["让他人",
-					"历史记录",
-					"风格",
-					"发GV讽德诵功",
-					"从VBVCD非凡哥",
-					"让他个人",
-					"海景房",
-					"电饭锅电饭锅",
-					"东方饭店",
-					"45让他的风格",
-					"规划局",
-					"回家了"],//热门搜索
-			payname: '',
-			payid: '',
+			hotWords:[],//热门搜索
+			likeList:[], // 今日推荐
 			value: ''  // 搜索值
 		};
+	},
+	// 挂载完成
+	mounted() {
+		//获取热门搜索数据
+		this.getHotdata();
+		//获取今天值得买
+		this.getlikeList();
 	},
 	onLoad: function() {
 		const than = this
@@ -203,6 +148,35 @@ export default {
 			}
 			
 		},
+		// 获取热门搜索数据
+		getHotdata(){
+			let self = this
+			this.$tools.apiGet('api/hot_key/apikey/'+this.CONFIGAPI.apikey).then(function(res){
+				console.log(res);
+				if(res.code == 1){
+					self.hotWords = res.data || []
+				}
+			})
+		},
+		// 获取今日推荐
+		getlikeList(){
+			let self = this
+			this.$tools.apiGet('api/get_deserve_item/apikey/'+this.CONFIGAPI.apikey).then(function(res){
+				console.log(res);
+				if(res.code == 1){
+					self.likeList = res.item_info || []
+				}else{
+					
+				}
+			})
+		},
+		// 去详情页
+		gotoDetail(id){
+			uni.navigateTo({
+				url: '/pages/index/detail?itemid='+id
+			});
+			
+		},
 		// 清除历史记录
 		clearHistoryList(){
 			this.historyList = []
@@ -241,9 +215,9 @@ export default {
 		/* #ifdef APP-PLUS */
 		padding-top: 40rpx;
 		/* #endif */
-		background-color: #FFFFFF;
+		background-color: #05a6fe;
 		font-size: 28rpx;
-		color: #05a6fe;
+		color: #FFFFFF;
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
@@ -259,7 +233,7 @@ export default {
 		height: 60rpx;
 		padding: 10rpx 60rpx 10rpx 80rpx;
 		box-sizing: border-box;
-		background-color: #e8e8e8;
+		background-color: #FFFFFF;
 		border-radius: 50rpx;
 		color: #666;
 		position: relative;
@@ -286,7 +260,7 @@ export default {
 		top:15rpx;
 		left: 40rpx;
 		background: url('../../static/images/sousuo.png') no-repeat center center;
-		background-size: 30rpx 30rpx;
+		background-size: 28rpx 28rpx;
 	}	
 	.input-wrap .clear {
 		width: 25rpx;
@@ -295,7 +269,7 @@ export default {
 		top:20rpx;
 		right: 30rpx;
 		background: url('../../static/images/p7.png') no-repeat center center;
-		background-size: 30rpx 30rpx;
+		background-size: 20rpx 20rpx;
 	}
 	.rightIcon{
 		width: 60rpx;
@@ -352,8 +326,9 @@ export default {
 	.bannerGap .container .item-warp:nth-child(2n){margin-right: 0;}
 	.bannerGap .container .item-warp .topImg{margin-bottom: 10rpx;display: flex;align-items: center;justify-content: center;}
 	.bannerGap .container .item-warp .topImg image{width: 280rpx;height: 300rpx;}
+	.bannerGap .container .item-warp .textTitle .channel{background:#fe6900 ;color: #FFFFFF;font-size:24rpx;padding:5rpx 10rpx;margin-right: 10rpx;border-radius: 5rpx;}
 	.bannerGap .container .item-warp .textTitle{display: -webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;font-size:30rpx;overflow: hidden;line-height: 1.4;}
-	.bannerGap .container .item-warp .price{display: flex;}
+	.bannerGap .container .item-warp .price{display: flex;padding: 8rpx 0rpx;}
 	.bannerGap .container .item-warp .price .ruling{color: #fe6900;font-size:32rpx}
 	.bannerGap .container .item-warp .price .ruling .original{color: #555555; text-decoration: line-through;font-size:26rpx}
 	.salesWrap{display: flex;}

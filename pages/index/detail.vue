@@ -9,7 +9,7 @@
 					</view>
 		            <view class="header-title-wrap" v-show="showAbs">
 						<view class="detail_anchor_wrap">
-							<text>商品</text>
+							<text class="actives">商品</text>
 							<text>详情</text>
 							<text>推荐</text>
 						</view>
@@ -34,16 +34,16 @@
 			<view class="infoWrap">
 				<view class="titleWrap">
 					<view class="leftNuber">
-						<text class="current">￥100</text>
-						<text class="original">￥520</text>
+						<text class="current">￥{{detaildata.itemendprice}}</text>
+						<text class="original">￥{{detaildata.itemprice}}</text>
 					</view>
 					<view class="rightNuber">
-						<text class="sales">销量:</text>
+						<text class="sales">销量:{{detaildata.itemsale | tranNumber }}{{getTrueLength(detaildata.itemsale) >=5 ? '万' : ''}}</text>
 					</view>
 				</view>
 				<view class="titleTxtWrap">
-					<text class="channel"></text>
-					<text class="titleTxt">这是标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题</text>
+					<text class="channel">{{detaildata.shoptype | shopType}}</text>
+					<text class="titleTxt">{{detaildata.itemtitle}}</text>
 				</view>
 			</view>
 		</view>
@@ -54,11 +54,11 @@
 				推荐理由
 			</view>
 			<view class="rightRecommen">
-				双方各考虑到房价是公开双方各考虑到房价是公开双方各考虑到房价是公开双方各考虑到房价是公开双方各考虑到房价是公开
+				{{detaildata.itemdesc}}
 			</view>
 		</view>
 		<!-- banner -->
-		<banner-item :titleName='"猜你喜欢"' :leftrightMenu="false"></banner-item>
+		<banner-item :titleName='"猜你喜欢"'></banner-item>
 		<view class="recommendWrap">
 			<scroll-view class="scroll-view_H" show-scrollba="true" scroll-x="true" @scroll="scroll" scroll-left="50">
 				<view id="demo1" class="scroll-view-item_H uni-bg-red">猜你喜欢猜你喜欢猜你喜欢</view>
@@ -69,12 +69,9 @@
 		</view>
 		
 		<!-- banner -->
-		<banner-item :titleName='"详情"'></banner-item>
+		<banner-item :titleName='"商品详情"'></banner-item>
 		<view class="detailWrap">
-			<image src="../../static/images/activation_my.png"></image>
-			<image src="../../static/images/activation_my.png"></image>
-			<image src="../../static/images/activation_my.png"></image>
-			<image src="../../static/images/activation_my.png"></image>
+			<image  v-for="(item,index) in imgList" :key="index" :src="item"></image>
 		</view>
 		<!-- footer -->
 		<view class="footerWrap">
@@ -112,13 +109,11 @@
 	            interval: 2000, //自动切换时间间隔
 	            duration: 500, // 滑动时长
 				nav:false, // 顶部背景颜色
-				imgList:[
-					require("../../static/images/ssd.jpg"),
-					require("../../static/images/activation_my.png"),
-					require("../../static/images/ssd.jpg")],
+				imgList:[],
+				detaildata:{},
 				showAbs:false,
 				scrollTop:0,
-				
+				itemid:'', // 订单id
 					
 	        }
 	    },
@@ -126,19 +121,38 @@
 		computed: {
 			
 		},
+		onLoad: function(e) {
+			this.itemid = e.itemid
+		},
 		// 创建完成
 		created(){
-			
+			let that = this
 		},
 		//挂载完成
 		mounted(){
-
+			//获取详情数据
+			this.getDetaidata()
 		},
 		methods: {
 			// 返回
 			navigateBack() {
 				uni.navigateBack()
-			},	
+			},
+			//获取详情数据
+			getDetaidata(){
+				let self = this
+				this.$tools.apiGet('api/item_detail/apikey/'+this.CONFIGAPI.apikey+'/itemid/'+this.itemid).then(function(res){
+					if(res.code == 1){
+						self.detaildata = res.data || {}
+						if(self.detaildata.taobao_image!=null && self.detaildata.taobao_image!='') {
+							self.imgList = self.detaildata.taobao_image.split(",")
+						}else{
+							self.imgList.push(self.detaildata.itempic) 
+						}
+						
+					}
+				})
+			},
 			// 首页
 			goHome(){
 				uni.switchTab({
@@ -148,7 +162,6 @@
 			// 点击大图
 		    preview(res){  
 				let myindex = res.currentTarget.id;  
-				console.log(myindex)
 				uni.previewImage({  
 					urls:this.imgList,  
 					current:myindex  
@@ -172,7 +185,19 @@
 			scroll(e) {
 				this.scrollTop = e.detail.scrollTop
 			},
-	
+			//获取字符串的真实长度（字节长度）
+		    getTrueLength(str){
+				if(str==undefined) return '0'
+			    let len = str.length, truelen = 0;
+			    for(let x = 0; x < len; x++){
+			        if(str.charCodeAt(x) > 128){
+			            truelen += 2;
+			        }else{
+			            truelen += 1;
+			        }
+			    }
+			    return truelen;
+			}
 		},
 		// 离开该页面需要移除这个监听的事件
 		destroyed(){
@@ -180,6 +205,8 @@
 		}
 		
 	}
+	
+	
 </script>
 
 <style>
@@ -206,29 +233,31 @@
 		align-items: center;
 		justify-content: space-between;
 	}    
-	.bg {background-color: #FFFFFF !important;}	  
+	.bg {background-color: #05a6fe !important;}	  
 	.header-title-wrap {
 		flex: 1;
 		margin: 0 70rpx;
 		height: 60rpx;
 		line-height: 60rpx;
-		color: #666;
+		color: #FFFFFF;
 		position: relative;
 	}
 	.detail_anchor_wrap{line-height: 60rpx;height: 60rpx;display: flex;}
 	.detail_anchor_wrap  text{flex: 1;text-align: center;}
-	.headerLeftMenu{background: #FFFFFF;border-radius: 100%;height: 60rpx;width: 60rpx;display: flex;}
-	.headerRightMenu{background: #FFFFFF;border-radius: 50%;height: 60rpx;width: 60rpx;display: flex;}
-	.backIcon{height: 60rpx;width: 60rpx;border-radius: 50%;background: url('../../static/images/left_icon.png') no-repeat 5% center;background-size: 50rpx 50rpx;} 
-	.menu{height: 60rpx;width: 60rpx;border-radius: 50%;background: url('../../static/images/icon/spriteIcon.png') no-repeat center center;background-size: 50rpx 50rpx;}   
+	.detail_anchor_wrap  text.actives{color:#FFFF00 !important;font-size: 32rpx;}
+	.headerLeftMenu{background: #05a6fe;border-radius: 100%;height: 60rpx;width: 60rpx;display: flex;}
+	.headerRightMenu{background: #05a6fe;border-radius: 50%;height: 60rpx;width: 60rpx;display: flex;}
+	.backIcon{height: 60rpx;width: 60rpx;border-radius: 50%;background: url('../../static/images/left_bai_icon.png') no-repeat center center;background-size: 50rpx 50rpx;} 
+	.menu{height: 60rpx;width: 60rpx;border-radius: 50%;background: url('../../static/images/icon/sprite_bai_icon.png') no-repeat center center;background-size: 50rpx 50rpx;}   
 	
 	.padding-wrap{width: 750rpx;display: block;height: 100%;}
 	.infoWrap{padding:15rpx 15rpx 20rpx;background:#FFFFFF;}
 	.titleWrap{display: flex;align-items: center;justify-content: space-between;padding: 10rpx 0;}
-	.leftNuber .current{font-size:38rpx;color: #f33;}
-	.leftNuber .original{font-size:32rpx;margin-left: 15rpx;text-decoration:line-through;color: #666;}
+	.leftNuber .current{font-size:40rpx;color: #f33;}
+	.leftNuber .original{font-size:28rpx;margin-left: 15rpx;text-decoration:line-through;color: #666;}
 	.rightNuber{padding-right: 20rpx;color: #666;}
 	.titleTxtWrap{padding:0 10rpx 10rpx;color: #333;}
+	.channel{color: #FFFFFF;background: #fe6900;padding: 3rpx 8rpx;font-size:25rpx;margin-right:10rpx;border-radius: 5rpx;}
 	.titleTxt{font-size:32rpx}
 	
 	.recommend{padding: 15rpx;background: #FFFFFF;display: flex;margin-top:20rpx}

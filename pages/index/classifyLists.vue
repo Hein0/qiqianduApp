@@ -31,7 +31,7 @@
 		<!-- 列表 -->
 		<view class="bannerGap">
 			<view class="container">
-				<view class="item-warp" v-for="(item,index) in classifyList" :key="index">
+				<view class="item-warp" v-for="(item,index) in classifyList" :key="index" @tap="gotoDetail(item.itemid)">
 					<view class="topImg">
 						<image :src="item.itempic" mode=""></image>
 					</view>
@@ -49,15 +49,16 @@
 				</view>
 			</view>
 		</view>
-		
+		<uni-load-more  :loadingType="loadingType" :contentText="contentText" ></uni-load-more>
 	</view>
   
 </template>
 <script>
+import uniLoadMore from '@/components/common/uni-load-more.vue';
 export default {
 	// 组件
 	components:{
-
+		uniLoadMore
 	},
 	// 计算属性
 	computed: {
@@ -66,10 +67,18 @@ export default {
 	data() {
 		return {
 			min_id:1, // 分页数
+			timer: null,
 			name: '', // 路由带过来的名称
 			cid:'', // 路由带过来的id   0全部，1女装，2男装，3内衣，4美妆，5配饰，6鞋品，7箱包，8儿童，9母婴，10居家，11美食，12数码，13家电，14其他，15车品，16文体
 			sort:4, //0.综合（最新），1.券后价(低到高)，2.券后价（高到低），3.券面额，4.销量，5.佣金比例，6.券面额（低到高），7.月销量（低到高），8.佣金比例（低到高），9.全天销量（高到低），10全天销量（低到高），11.近2小时销量（高到低），12.近2小时销量（低到高），13.优惠券领取量（高到低），14.好单库指数（高到低）
 			classifyList:[],  // 数据列表
+			loadingText: '加载中...',
+			loadingType: 0,//定义加载方式 0---contentdown  1---contentrefresh 2---contentnomore
+			contentText: {
+				contentdown:'上拉显示更多',
+				contentrefresh: '正在加载...',
+				contentnomore: '已经到底啦~',
+			}
 		}
 	},
 	onLoad: function(e) {
@@ -80,7 +89,23 @@ export default {
 	mounted() {
 		//获取列表数据
 		this.getdataList();
-	
+	},
+	// 下拉刷新
+	onPullDownRefresh() {
+		//下拉刷新的时候请求一次数据
+		this.getdataList();
+	},
+	// 上拉加载
+	onReachBottom() {
+		//触底的时候请求数据，即为上拉加载更多
+		//为了更加清楚的看到效果，添加了定时器
+		let self = this
+		if (self.timer != null) {
+			clearTimeout(self.timer);
+		}
+		self.timer = setTimeout(function() {
+			self.getmoreData();
+		}, 300);
 	},
 	methods: {
 		// 返回
@@ -89,17 +114,41 @@ export default {
 		},	
 		//获取列表数据
 		getdataList() {
-			if(this.name !=''){
-				uni.request({
-				    url: '/api/get_keyword_items/apikey/'+this.CONFIGAPI.apikey+'/keyword/'+this.name+'/back/10/sort/'+this.sort+'/min_id/'+this.min_id+'/cid/'+this.cid, 
-				    success: (res) => {
-						if(res.data.code == 1){
-							this.classifyList = res.data.data || []
-						}
-				    }
-				});
-				
+			let self = this
+			if(self.name !=''){
+				this.$tools.apiGet('api/get_keyword_items/apikey/'+this.CONFIGAPI.apikey+'/keyword/'+this.name+'/back/10/sort/'+this.sort+'/min_id/'+this.min_id+'/cid/'+this.cid).then(function(res){
+					if(res.code == 1){
+						self.classifyList = res.data || []
+					}
+				})
 			}
+		},
+		// 加载更多
+		getmoreData() {
+			let self = this
+			if (self.loadingType !== 0) {//loadingType!=0;直接返回
+				return false;
+			}
+			self.loadingType = 1;
+			uni.showNavigationBarLoading();//显示加载动画
+			this.$tools.apiGet('api/get_keyword_items/apikey/'+this.CONFIGAPI.apikey+'/keyword/'+this.name+'/back/10/sort/'+this.sort+'/min_id/'+this.min_id+'/cid/'+this.cid).then(function(res){
+				if (res.data == null) {//没有数据
+					self.loadingType = 2;
+					uni.hideNavigationBarLoading();//关闭加载动画
+					return;
+				}
+				self.min_id = res.min_id;//获取下一页的参数值
+				self.classifyList = self.classifyList.concat(res.data);//将数据拼接在一起
+				self.loadingType = 0;//将loadingType归0重置
+				uni.hideNavigationBarLoading();//关闭加载动画
+			})
+		},
+		// 去详情页
+		gotoDetail(id){
+			uni.navigateTo({
+				url: '/pages/index/detail?itemid='+id
+			});
+			
 		}
 	}
 };
@@ -170,14 +219,14 @@ export default {
 	}
 		
 	/* 列表 */
-	.bannerGap{padding: 20rpx;width: 710rpx;}
+	.bannerGap{padding: 20rpx 20rpx 0rpx;width: 710rpx;}
 	.bannerGap .container { display: -webkit-box;display: -ms-flexbox;display: flex;flex-wrap: wrap;}
 	.bannerGap .container .item-warp {width: 305rpx;padding: 20rpx;background: #FFFFFF;margin-right: 10px;margin-bottom: 20rpx;border-radius: 20rpx;}
 	.bannerGap .container .item-warp:nth-child(2n){margin-right: 0;}
 	.bannerGap .container .item-warp .topImg{margin-bottom: 10rpx;display: flex;align-items: center;justify-content: center;}
 	.bannerGap .container .item-warp .topImg image{width: 280rpx;height: 300rpx;}
 	.bannerGap .container .item-warp .textTitle{display: -webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;font-size:30rpx;overflow: hidden;line-height: 1.4;}
-	.bannerGap .container .item-warp .textTitle .channel{background:#fe6900 ;color: #FFFFFF;font-size:24rpx;padding:5rpx 10rpx;margin-right: 10rpx;}
+	.bannerGap .container .item-warp .textTitle .channel{background:#fe6900 ;color: #FFFFFF;font-size:24rpx;padding:5rpx 10rpx;margin-right: 10rpx;border-radius: 5rpx;}
 	.bannerGap .container .item-warp .price{display: flex;padding: 10rpx 0rpx;}
 	.bannerGap .container .item-warp .price .ruling{color: #fe6900;font-size:34rpx}
 	.bannerGap .container .item-warp .price .ruling .original{color: #555555; text-decoration: line-through;font-size:26rpx}

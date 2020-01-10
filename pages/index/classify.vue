@@ -100,17 +100,14 @@
 			},
 			/* 获取列表数据 */
 			getListData() {
-				uni.request({
-				    url: '/api/super_classify/apikey/Hein', 
-				    success: (res) => {
-				        console.log(res.data);
-						if(res.data.code == 1){
-							this.leftArray = res.data.general_classify
-							this.cid = res.data.general_classify[0].cid
-							this.mainArray = res.data.general_classify[0].data  // 初始化第一条数据
-						}
-				    }
-				});
+				let self = this
+				this.$tools.apiGet('api/super_classify/apikey/Hein').then(function(res){
+					if(res.code == 1){
+						self.leftArray = res.general_classify
+						self.cid = res.general_classify[0].cid
+						self.mainArray = res.general_classify[0].data  // 初始化第一条数据
+					}
+				})
 			},
 			// 跳转搜索页
 			gotoSearchLists (name){
