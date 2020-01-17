@@ -9,9 +9,7 @@
 					</view>
 		            <view class="header-title-wrap" v-show="showAbs">
 						<view class="detail_anchor_wrap">
-							<text class="actives">商品</text>
-							<text>详情</text>
-							<text>推荐</text>
+							<text v-for="(item,index) in anchor_wrap" @tap="anchorTap(index)" :class="{'actives':anchorIndex==index}">{{item}}</text>
 						</view>
 		            </view>
 					<view class="headerRightMenu">
@@ -45,33 +43,60 @@
 					<text class="channel">{{detaildata.shoptype | shopType}}</text>
 					<text class="titleTxt">{{detaildata.itemtitle}}</text>
 				</view>
+				<view class="loanbond" v-if="detaildata.couponsurplus >0" @tap="getLoanbond(detaildata.couponurl)">
+					<view class="textWrap">
+						<view class="titles">{{detaildata.couponmoney}}元优惠劵</view>
+						<view class="times">有效日期{{detaildata.couponstarttime | formatMD}}至{{detaildata.couponendtime | formatMD}}</view>
+					</view>
+					<view class="rigTextWrap">
+						<view class="textItem">
+							立即
+						</view>
+						<view class="textItem">
+							领券
+						</view>
+					</view>
+				</view>
 			</view>
 		</view>
 		
 		<!-- 推荐词 -->
 		<view class="recommend">
 			<view class="leftRecommen">
-				推荐理由
+				推荐语
 			</view>
 			<view class="rightRecommen">
 				{{detaildata.itemdesc}}
 			</view>
 		</view>
 		<!-- banner -->
-		<banner-item :titleName='"猜你喜欢"'></banner-item>
+		<banner-item :titleName='"猜你喜欢"' ref="recommend"></banner-item>
 		<view class="recommendWrap">
-			<scroll-view class="scroll-view_H" show-scrollba="true" scroll-x="true" @scroll="scroll" scroll-left="50">
-				<view id="demo1" class="scroll-view-item_H uni-bg-red">猜你喜欢猜你喜欢猜你喜欢</view>
-				<view id="demo2" class="scroll-view-item_H uni-bg-green">猜你喜欢猜你喜欢猜你喜欢</view>
-				<view id="demo3" class="scroll-view-item_H uni-bg-blue">猜你喜欢猜你喜欢猜你喜欢</view>
-			</scroll-view>
-			
+			<view class="container">
+				<view class="item-warp" v-for="(item,index) in recommend" :key="index" @tap="gotoDetail(item.itemid)">
+					<view class="topImg">
+						<image :src="item.itempic" mode=""></image>
+					</view>
+					<view class="textTitle">
+						<text class="channel">{{item.shoptype | shopType}}</text>
+						{{item.itemtitle}}
+					</view>
+					<view class="price">
+						<text class="ruling">￥{{item.itemendprice}} <text class="original">￥{{item.itemprice}}</text></text>
+					</view>
+					<view class="salesWrap">
+						<view class="sales">已售{{item.itemsale | tranNumber}}{{item.itemsale.length >=5 ? '万' : ''}}</view>
+						<view class="bond">{{item.couponmoney}}元劵</view>
+					</view>
+				</view>
+			</view>
 		</view>
 		
 		<!-- banner -->
-		<banner-item :titleName='"商品详情"'></banner-item>
+		<banner-item :titleName='"商品详情"' ref="detail"></banner-item>
 		<view class="detailWrap">
-			<image  v-for="(item,index) in imgList" :key="index" :src="item"></image>
+			<rich-text :nodes="pcDescContent"></rich-text>
+			<!-- <image  v-for="(item,index) in imgList" :key="index" :src="item"></image> -->
 		</view>
 		<!-- footer -->
 		<view class="footerWrap">
@@ -82,14 +107,14 @@
 						<view class="syIcon"></view>
 						<view class="syText">首页</view>
 					</view>
-					<view class="shoucang flexs">
-						<view class="scIcon"></view>
-						<view class="scText">收藏</view>
+					<view class="shoucang flexs" @tap="clickCollect">
+						<view class="scIcon" :class="collect.icon"></view>
+						<view class="scText" :class="{fontLs:collect.isCollect==true}">{{collect.name}}</view>
 					</view>
 				</view>
 				<view class="footerCon">
 					<view class="inputSeca">分享</view>
-					<view class="inputSeca active">立即购买</view>
+					<view class="inputSeca active" @tap="getLoanbond(detaildata.couponurl)">立即购买</view>
 				</view>
 			</view>
 		</view>
@@ -110,10 +135,21 @@
 	            duration: 500, // 滑动时长
 				nav:false, // 顶部背景颜色
 				imgList:[],
-				detaildata:{},
+				detaildata:{}, // 产品详情页的数据
 				showAbs:false,
 				scrollTop:0,
+				anchor_wrap:["商品","推荐","详情"],
+				anchorIndex:0,
+				recommend:[], // 推荐
 				itemid:'', // 订单id
+				pcDescContent:"", //详情图
+				collect: {
+				    icon: 'star-o',
+				    name: '收藏',
+				    isCollect: false,
+				},
+				historyKey: 'orange-history',
+				collectKey: 'orange-collect'
 					
 	        }
 	    },
@@ -130,14 +166,40 @@
 		},
 		//挂载完成
 		mounted(){
+				
 			//获取详情数据
 			this.getDetaidata()
+			this.getRecommend() //获取推荐数据
+			this.getDetailImg() // 获取详情页图
 		},
 		methods: {
 			// 返回
 			navigateBack() {
 				uni.navigateBack()
 			},
+			
+			anchorTap(index){
+				let dom = ""
+				if(index == 0){
+					dom = ".padding-wrap"
+					this.anchorIndex = index
+				}else if(index == 1){
+					dom = ".recommendWrap"
+					this.anchorIndex = index
+				}else if(index == 2){
+					dom = ".detailWrap"
+					this.anchorIndex = index
+				}
+				uni.createSelectorQuery().select(".detail").boundingClientRect(data=>{
+				    uni.createSelectorQuery().select(dom).boundingClientRect((res)=>{
+				        uni.pageScrollTo({
+				            duration:300,
+				            scrollTop:res.top - data.top
+				        })
+				    }).exec()
+				}).exec();
+			},
+			
 			//获取详情数据
 			getDetaidata(){
 				let self = this
@@ -149,16 +211,103 @@
 						}else{
 							self.imgList.push(self.detaildata.itempic) 
 						}
-						
+						try {
+							//收藏
+						    let isExist = self.$queue.isExist(self.collectKey, res.data.itemid);
+						    if (isExist == true) {
+						        self.collect.name = "已收藏";
+						        self.collect.icon = "star";
+						        self.collect.isCollect = true;
+						    } else {
+						        self.collect.name = "收藏";
+						        self.collect.icon = "star-o";
+						        self.collect.isCollect = false;
+						    }
+							//浏览记录
+						    isExist = self.$queue.isExist(self.historyKey, res.data.itemid);
+						    if (isExist == false) {
+						        self.$queue.insert({
+						            key: self.historyKey,
+						            value: self.detaildata,
+						        });
+						    }
+						} catch (e) {
+						    console.log(e);
+						}
+					}else{
+						uni.showToast({
+						    title: res.msg,
+						    duration: 1500,
+							icon:'none'
+						});
 					}
 				})
 			},
+			// 获取详情图片
+			getDetailImg(){
+				let self = this
+				uni.request({
+				    url: "tao/h5/mtop.taobao.detail.getdesc/6.0/?data=%7Bid:\"" + this.itemid + "\"%7D", //仅为示例，并非真实接口地址。
+				    success: (res) => {
+						let richtext=  res.data.data.pcDescContent;
+						    const regex = new RegExp('<img', 'gi');
+						    richtext= richtext.replace(regex, `<img style="width: 100%;"`);
+				        self.pcDescContent = richtext 
+				    }
+				})
+			},
+			
+			// 获取推荐数据
+			getRecommend() {
+				let self = this
+				this.$tools.apiGet('api/get_similar_info/apikey/'+this.CONFIGAPI.apikey+'/itemid/'+this.itemid).then(function(res){
+					if(res.code == 1){
+						self.recommend = res.data || []
+					}else{
+						uni.showToast({
+						    title: res.msg,
+						    duration: 1500,
+							icon:'none'
+						});
+					}
+				})
+			},
+			
+			// 收藏、取消收藏
+			clickCollect() { //收藏
+			    if (this.collect.isCollect == true) {
+					uni.showToast({
+					    title: "收藏已取消",
+					    duration: 1500,
+						icon:'none'
+					});
+			        this.$queue.removeItem(this.collectKey, [this.detaildata.itemid]);
+			        this.collect.name = "收藏";
+			        this.collect.icon = "star-o";
+			        this.collect.isCollect = false;
+			    } else {
+					uni.showToast({
+					    title: "收藏成功",
+					    duration: 1500,
+						icon:'none'
+					});
+			        this.$queue.insert({
+			            key: this.collectKey,
+			            value: this.detaildata,
+			        });
+			        this.collect.name = "已收藏";
+			        this.collect.icon = "star";
+			        this.collect.isCollect = true;
+			    }
+			},
+			
 			// 首页
 			goHome(){
 				uni.switchTab({
 					url:"/pages/index/index"
 				})
 			},	
+			
 			// 点击大图
 		    preview(res){  
 				let myindex = res.currentTarget.id;  
@@ -167,24 +316,37 @@
 					current:myindex  
 				})  
 			},
+			
 			// app 监听滚动事件
 			onPageScroll(obj){
 				this.handleScroll(obj.scrollTop)
 			},
+			
 			// 滚动事件
 			handleScroll(top){
 				if(top > 88){
 					this.nav = true;
 					this.showAbs = true
 				}else{
+					this.anchorIndex = 0
 					this.showAbs = false
 					this.nav = false;
 				}
 			},
-			/* 左右滑动 */
-			scroll(e) {
-				this.scrollTop = e.detail.scrollTop
+			
+			// 去详情页
+			gotoDetail(id){
+				uni.navigateTo({
+					url: '/pages/index/detail?itemid='+id
+				});
+				
 			},
+			
+			// 领劵购买
+			getLoanbond(tburl){
+				window.location.href = tburl
+			},
+			
 			//获取字符串的真实长度（字节长度）
 		    getTrueLength(str){
 				if(str==undefined) return '0'
@@ -199,6 +361,7 @@
 			    return truelen;
 			}
 		},
+		
 		// 离开该页面需要移除这个监听的事件
 		destroyed(){
 			window.removeEventListener('scroll',this.handleScroll)
@@ -252,6 +415,11 @@
 	
 	.padding-wrap{width: 750rpx;display: block;height: 100%;}
 	.infoWrap{padding:15rpx 15rpx 20rpx;background:#FFFFFF;}
+	.loanbond{display: flex;width: 720rpx;height: 160rpx;text-align: center;padding: 15rpx 0rpx;background: url('../../static/images/yhj.png') no-repeat center center;background-size:700rpx 160rpx;}
+	.loanbond .textWrap{width:520rpx;height: 160rpx;color: #FFFFFF;}
+	.loanbond .textWrap .titles{font-size: 36rpx;padding-bottom: 8rpx;margin-top:35rpx}
+	.loanbond .textWrap .times{font-size: 28rpx;}
+	.loanbond .rigTextWrap{flex: 1;height: 130rpx;text-align: center;padding-top:35rpx;color: #FFFFFF;font-size: 36rpx;}
 	.titleWrap{display: flex;align-items: center;justify-content: space-between;padding: 10rpx 0;}
 	.leftNuber .current{font-size:40rpx;color: #f33;}
 	.leftNuber .original{font-size:28rpx;margin-left: 15rpx;text-decoration:line-through;color: #666;}
@@ -263,19 +431,25 @@
 	.recommend{padding: 15rpx;background: #FFFFFF;display: flex;margin-top:20rpx}
 	.recommend .leftRecommen{color: #f33;width: 150rpx;text-align:center;font-size:30rpx}
 	.recommend .rightRecommen{padding:0rpx 15rpx;color: #333;flex: 1;}
+	
 	/* 猜你喜欢 */
-	.recommendWrap{display: flex;width: 100%; white-space: nowrap;}
-	.scroll-view-item_H {
-	    display: inline-block;
-	    width: auto;
-	    height: 150px;
-	    line-height: 150px;
-	    text-align: center;
-	    font-size: 18px;
-	}
+	.recommendWrap{padding: 20rpx;width: 710rpx;}
+	.recommendWrap .container { display: -webkit-box;display: -ms-flexbox;display: flex;flex-wrap: wrap;}
+	.recommendWrap .container .item-warp {width: 305rpx;padding: 20rpx;background: #FFFFFF;margin-right: 10px;margin-bottom: 20rpx;border-radius: 20rpx;}
+	.recommendWrap .container .item-warp:nth-child(2n){margin-right: 0;}
+	.recommendWrap .container .item-warp .topImg{margin-bottom: 10rpx;display: flex;align-items: center;justify-content: center;}
+	.recommendWrap .container .item-warp .topImg image{width: 280rpx;height: 300rpx;}
+	.recommendWrap .container .item-warp .textTitle .channel{background:#fe6900 ;color: #FFFFFF;font-size:24rpx;padding:5rpx 10rpx;margin-right: 10rpx;border-radius: 5rpx;}
+	.recommendWrap .container .item-warp .textTitle{display: -webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;font-size:30rpx;overflow: hidden;line-height: 1.4;}
+	.recommendWrap .container .item-warp .price{display: flex;padding: 8rpx 0rpx;}
+	.recommendWrap .container .item-warp .price .ruling{color: #fe6900;font-size:32rpx}
+	.recommendWrap .container .item-warp .price .ruling .original{color: #555555; text-decoration: line-through;font-size:26rpx}
+	.salesWrap{display: flex;}
+	.salesWrap .sales{font-size: 28rpx;color:#666;flex: 1;}
+	.salesWrap .bond{font-size: 26rpx;background: #e42424;color: #FFFFFF;padding:5rpx 10rpx}
+	
 	/* 详情 */
 	.detailWrap{background: #FFFFFF;}
-	.detailWrap image{width: 100%;}
 	
 	
 	/* footerWrap */
@@ -284,7 +458,11 @@
 	.footerIcon{flex: 1;display: flex;margin-right: 10rpx;}
 	.flexs{flex: 1;text-align: center;color: #707070;}
 	.syIcon{width: 45rpx;height: 45rpx;margin: 0 auto;background: url(../../static/images/home_nosel.png) no-repeat center center;background-size:45rpx 45rpx;}
-	.scIcon{width: 45rpx;height: 45rpx;margin: 0 auto;background: url(../../static/images/icon/sc_icon.png) no-repeat center center;background-size:45rpx 45rpx;}
+	.scIcon{width: 45rpx;height: 45rpx;margin: 0 auto;}
+	.fontLs{color:#05a6fe}
+	.scIcon.star{background: url(../../static/images/icon/sc_icon_sel.png) no-repeat center center;background-size:45rpx 45rpx;}
+	.scIcon.star-o{background: url(../../static/images/icon/sc_icon.png) no-repeat center center;background-size:45rpx 45rpx;}
+	
 	.footerCon {height: 80rpx;box-sizing: border-box;background-color: #FF9500;border-radius: 50rpx;color: #FFFFFF;display: flex;width: 500rpx;position: relative;flex: 2;}
 	.footerCon .inputSeca { height: 80rpx;flex: 1;text-align: center;line-height: 80rpx;font-size: 30rpx;border-radius: 50rpx;}  
 	.footerCon .inputSeca.active{color:#FFFFFF;background: #05a6fe;}

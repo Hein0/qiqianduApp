@@ -7,9 +7,9 @@
 					<view class="headerLeftMenu">
 						<text class="backIcon" @click="navigateBack"></text>
 					</view>
-		            <view class="header-title-wrap">
+		            <view class="header-title-wrap" @tap="goSearchPage">
 						<view class="detail_anchor_wrap">
-							<text>分类</text>
+							<text>搜索商品名或粘贴淘宝标题</text>
 						</view>
 		            </view>
 					<view class="headerRightMenu">
@@ -84,19 +84,25 @@
 					console.log('gaodu', res.windowHeight)
 				}
 			});
+			//获取列表数据
+			this.getListData();
 		},
 		computed: {
 
 		},
 		mounted() {
-			//获取列表数据
-			this.getListData();
 
 		},
 		methods: {
 			// 返回
 			navigateBack() {
 				uni.navigateBack()
+			},
+			// 搜索
+			goSearchPage() {
+				uni.switchTab({
+					url:'/pages/search/search'
+				})
 			},
 			/* 获取列表数据 */
 			getListData() {
@@ -164,9 +170,9 @@
 		height: 88rpx;
 		/* #endif */
 	}
-	.header-title-wrap {flex: 1;margin: 0 70rpx;height: 60rpx;line-height: 60rpx;color: #FFFFFF;position: relative;}
-	.detail_anchor_wrap{line-height: 60rpx;height: 60rpx;display: flex;font-size:33rpx}
-	.detail_anchor_wrap  text{flex: 1;text-align: center;}
+	.header-title-wrap {flex: 1;height: 60rpx;line-height: 60rpx;color: #999;position: relative;}
+	.detail_anchor_wrap{line-height: 60rpx;height: 60rpx;display: flex;font-size:28rpx;display: flex;background: #FFFFFF;border-radius: 30rpx;text-indent: 50rpx;}
+	.detail_anchor_wrap  text{flex: 1;}
 	.headerLeftMenu{border-radius: 100%;height: 60rpx;width: 60rpx;display: flex;}
 	.headerRightMenu{border-radius: 50%;height: 60rpx;width: 60rpx;display: flex;}
 	.backIcon{height: 60rpx;width: 60rpx;border-radius: 50%;background: url('../../static/images/left_bai_icon.png') no-repeat 5% center;background-size: 48rpx 48rpx;} 

@@ -1,7 +1,7 @@
 const Tools = {
 	config: {
-		apiUrl: 'http://www.qiqiandu.com/',
-		// apiUrl: 'http://localhost:8080/'
+		// apiUrl: 'http://www.qiqiandu.com/',
+		apiUrl: 'http://localhost:8080/'
 
 	},
 	/**

@@ -14,7 +14,7 @@
 		<!-- 列表 -->
 		<view class="sectionWrap">
 			<view class="sectionList">
-				<view class="listItem">
+				<view class="listItem" @tap="gotoHistory">
 					<view class="listItem_container">
 						<view class="listItem_icon">
 							<image src="../../static/images/icon/lljl_icon.png" mode=""></image>
@@ -25,7 +25,7 @@
 						<view class="listItem_extra"></view>
 					</view>
 				</view>
-				<view class="listItem">
+				<view class="listItem" @tap="gotoCollect">
 					<view class="listItem_container">
 						<view class="listItem_icon">
 							<image src="../../static/images/icon/sc_icon.png" mode=""></image>
@@ -84,6 +84,18 @@
 		//方法
 		methods: {
 			
+			// 浏览历史
+			gotoHistory(){
+				uni.navigateTo({
+					url: '/pages/mine/history'
+				});
+			},
+			// 我的收藏
+			gotoCollect(){
+				uni.navigateTo({
+					url: '/pages/mine/collect'
+				});
+			}
 			
 			
 		}

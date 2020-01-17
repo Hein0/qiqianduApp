@@ -23,10 +23,21 @@
 		<!-- searchNavWrap -->
 		<view class="searchNavWrap">
 			<view class="searchNav">
-				<view class="navItem active">综合</view>
-				<view class="navItem">销量</view>
-				<view class="navItem">价格</view>
-				<view class="navItem">筛选<text class="icon-Filte"></text></view>
+				<view class="navItem" :class="{active:current==0}" @tap="tapHerd(0)">综合</view>
+				<view class="navItem" :class="{active:current==1&&sort==1,active2:current==1&&sort==2}" @tap="tapHerd(1)">
+					劵后价
+					<view class="tapImg">
+						<text class="up"></text>
+						<text class="drop"></text>
+					</view>
+				</view>
+				<view class="navItem" :class="{active:current==2&&sort==10,active2:current==2&&sort==9}" @tap="tapHerd(2)">
+					销量
+					<view class="tapImg">
+						<text class="up"></text>
+						<text class="drop"></text>
+					</view>
+				</view>
 			</view>
 		</view>
 		<!-- 列表 -->
@@ -67,12 +78,14 @@
 		},
 		data() {
 			return {
+				current:0,//当前选中
 				min_id:1, // 分页数
 				timer: null,
 				val: '', // 路由带过来的名称
 				cid:'', // 路由带过来的id   0全部，1女装，2男装，3内衣，4美妆，5配饰，6鞋品，7箱包，8儿童，9母婴，10居家，11美食，12数码，13家电，14其他，15车品，16文体
 				sort:0, //0.综合（最新），1.券后价(低到高)，2.券后价（高到低），3.券面额，4.销量，5.佣金比例，6.券面额（低到高），7.月销量（低到高），8.佣金比例（低到高），9.全天销量（高到低），10全天销量（低到高），11.近2小时销量（高到低），12.近2小时销量（低到高），13.优惠券领取量（高到低），14.好单库指数（高到低）
 				searchLists:[],  // 数据列表
+				historyList:[], // 搜索历史
 				loadingText: '加载中...',
 				loadingType: 0,//定义加载方式 0---contentdown  1---contentrefresh 2---contentnomore
 				contentText: {
@@ -84,6 +97,13 @@
 		},
 		onLoad: function(e) {
 			this.val = e.val
+			const than = this
+			uni.getStorage({
+			    key: 'searchAll_key',
+			    success: function (res) {
+			        than.historyList = res.data
+			    }
+			});
 		},
 		// 挂载完成
 		mounted() {
@@ -109,6 +129,36 @@
 		},				
 		// 方法
 		methods: {
+			
+			//点击tap
+			tapHerd(index){
+				if(index==0){
+					this.current = index
+					this.sort = 0
+					this.getdataList()
+				}else if(index==1){
+					this.current = index
+					if(this.sort != 1 && this.sort != 2){
+						this.sort = 1
+					}else if(this.sort == 1){
+						this.sort = 2
+					}else if(this.sort == 2){
+						this.sort = 1
+					}
+					this.getdataList()
+				}else if(index==2){
+					this.current = index
+					if(this.sort != 9 && this.sort != 10){
+						this.sort = 10
+					}else if(this.sort == 10){
+						this.sort = 9
+					}else if(this.sort == 9){
+						this.sort = 10
+					}
+					this.getdataList()
+				}
+			},
+			
 			//获取列表数据
 			getdataList() {
 				let self = this
@@ -120,10 +170,17 @@
 						if(res.code == 1){
 							self.min_id = res.min_id;//获取下一页的参数值
 							self.searchLists = res.data || []
+						}else{
+							uni.showToast({
+								title: res.msg,
+								duration: 1500,
+								icon:'none'
+							});
 						}
 					})
 				}
 			},
+			
 			// 加载更多
 			getmoreData() {
 				let self = this
@@ -133,7 +190,7 @@
 				self.loadingType = 1;
 				uni.showNavigationBarLoading();//显示加载动画
 				this.$tools.apiGet('api/supersearch/apikey/'+this.CONFIGAPI.apikey+'/keyword/'+this.val+'/back/10/sort/'+this.sort+'/min_id/'+this.min_id+'/tb_p/'+1).then(function(res){
-					if (res.data == null) {//没有数据
+					if (res.data == [] || res.min_id == 0) {//没有数据
 						self.loadingType = 2;
 						uni.hideNavigationBarLoading();//关闭加载动画
 						return;
@@ -144,29 +201,32 @@
 					uni.hideNavigationBarLoading();//关闭加载动画
 				})
 			},
+			
 			// 去详情页
 			gotoDetail(id){
 				uni.navigateTo({
 					url: '/pages/index/detail?itemid='+id
 				});
 			},
+			
 			// 返回
 			navigateBack() {
 				uni.navigateBack()
 			},	
+			
 			//搜索
 			goSearch() {
-				if(this.value !=''){
+				if(this.val !=''){
 					if(this.historyList){
 						var str = false;
 						for (let i=0;i<this.historyList.length;i++) {
-							if(this.historyList[i] === this.value){
+							if(this.historyList[i] === this.val){
 								str = true
 								break
 							}
 						}
 						if(!str){
-							this.historyList.push(this.value)    // 将输入框的值添加到搜索记录数组中存储
+							this.historyList.push(this.val)    // 将输入框的值添加到搜索记录数组中存储
 							uni.setStorage({
 								key: 'searchAll_key',
 								data: this.historyList,    
@@ -176,7 +236,7 @@
 							})
 						}
 					}else{
-						this.historyList.push(this.value)    // 将输入框的值添加到搜索记录数组中存储
+						this.historyList.push(this.val)    // 将输入框的值添加到搜索记录数组中存储
 						uni.setStorage({
 							key: 'searchAll_key',
 							data: this.historyList,    
@@ -185,7 +245,12 @@
 							}
 						})
 					}
-					
+				}else if(this.val ===''){
+					uni.showToast({
+						title:'请输入搜索内容！',
+						icon:'none',
+						duration:2000
+					})
 				}
 			},
 			// 清除
@@ -289,8 +354,14 @@
 		z-index: 999;
 	}
 	.searchNav {display: -webkit-box;display: -ms-flexbox; display: flex;-ms-flex-pack: distribute;justify-content: space-around;-ms-flex-flow: row nowrap;border-bottom: 1rpx solid #f4f4f4; background: #FFF;}	
-	.searchNav .navItem {-webkit-box-flex: 1;-moz-flex-grow: 1;-ms-flex-positive: 1;flex-grow: 1; padding: 20rpx 0;text-align: center;font-size: 30rpx;color: #666;letter-spacing: 0;}	
+	.searchNav .navItem {display: flex;padding: 20rpx 0;text-align: center;font-size: 30rpx;color: #666;letter-spacing: 0;align-items: center;}	
 	.searchNav .navItem.active{color: #0b9aff;}	
+	.searchNav .navItem.active2{color: #0b9aff;}
+	.searchNav .navItem .tapImg{padding-top:5rpx;padding-left: 5rpx;width: 20rpx;}
+	.searchNav .navItem .tapImg .up{width:16rpx;height:10rpx;display: block;background: url('../../static/images/icon/sheng1.png') no-repeat center center;background-size:16rpx 10rpx;}
+	.searchNav .navItem.active .tapImg .up{width:16rpx;height:10rpx;display: block;background: url('../../static/images/icon/sheng2.png') no-repeat center center;background-size:16rpx 10rpx;}
+	.searchNav .navItem .tapImg .drop{width:16rpx;height:10rpx;margin-top:5rpx;display: block;background: url('../../static/images/icon/jiang1.png') no-repeat center center;background-size:16rpx 10rpx;}
+	.searchNav .navItem.active2 .tapImg .drop{width:16rpx;height:10rpx;margin-top:5rpx;display: block;background: url('../../static/images/icon/jiang2.png') no-repeat center center;background-size:16rpx 10rpx;}
 	.icon-Filte {
 	    width: 30rpx;
 	    height: 33rpx;
@@ -314,7 +385,8 @@
 	.bannerGap .container .item-warp .price .ruling .original{color: #555555; text-decoration: line-through;font-size:26rpx}
 	.salesWrap{display: flex;}
 	.salesWrap .sales{font-size: 28rpx;color:#666;flex: 1;}
-	.salesWrap .bond{font-size: 26rpx;background: #e42424;color: #FFFFFF;padding:5rpx 10rpx}
-	
+	.salesWrap .bond{font-size: 26rpx;background: #e42424;color: #FFFFFF;padding:5rpx 15rpx;position: relative;}
+	.salesWrap .bond::before{position: absolute;width: 20rpx;height: 20rpx;content: "";left: -13rpx; top: 10rpx;background: #FFF;display: block;border-radius: 20rpx;}
+	.salesWrap .bond::after{position: absolute;width: 20rpx;height: 20rpx;content: "";right: -13rpx; top: 10rpx;background: #FFF;display: block;border-radius: 20rpx;}
 
 </style>

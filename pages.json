@@ -31,6 +31,13 @@
 			}
 		},
 		{
+		    "path" : "pages/community/specialList",// 仟度圈---专题圈
+		    "style" : {
+				"navigationBarTitleText": "专题圈",
+				"navigationStyle": "custom"
+			}
+		},
+		{
 		    "path" : "pages/search/search",// 超级搜索
 		    "style" : {
 				"navigationBarTitleText": "超级搜索",
@@ -56,6 +63,20 @@
 		    "path" : "pages/mine/mine",// 个人中心
 		    "style" : {
 				"navigationBarTitleText": "我的",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+		    "path" : "pages/mine/history",// 浏览历史
+		    "style" : {
+				"navigationBarTitleText": "浏览历史",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+		    "path" : "pages/mine/collect",// 我的收藏
+		    "style" : {
+				"navigationBarTitleText": "我的收藏",
 				"navigationStyle": "custom"
 			}
 		}

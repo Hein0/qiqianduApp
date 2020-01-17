@@ -60,7 +60,7 @@
 					</view>
 				</view>
 			</view>
-			<!--  好货专场  -->
+			<!--  =========好货专场======  -->
 			<view class="listItem" v-if="tabCurrentIndex==1" v-for="(item,index) in specialList" :key="index">
 				<view class="itemTop">
 					<image src="../../static/images/icon/sc_default.png" mode=""></image>
@@ -83,10 +83,23 @@
 						<view class="itemendprice">劵后￥{{items.itemendprice}}</view>
 					</view>
 				</view>
+			</view>
+			<!-- ==========精品专题============ -->
+			<view class="listItem" v-if="tabCurrentIndex==2" v-for="(item,index) in specialRing" :key="index" @tap="gotoSpecial(item.id,item.name)">
+				<view class="itemWrap">
+					<view class="imgWrap">
+						<image :src="'http://img.haodanku.com/'+item.app_image" mode=""></image>
+						<view class="times">活动时间:{{item.activity_start_time | formatMD}}-{{item.activity_end_time | formatMD}}</view>
+					</view>
+					<view class="titleWrap">
+						<view class="titleName">{{item.name}}</view>
+						<view class="tag">{{item.content}}</view>
+					</view>
+				</view>
 				
 			</view>
 		</view>
-		<uni-load-more  :loadingType="loadingType" :contentText="contentText" ></uni-load-more>
+		<uni-load-more v-if="tabCurrentIndex!=2"  :loadingType="loadingType" :contentText="contentText" ></uni-load-more>
 	</view>
 </template>
 
@@ -116,12 +129,13 @@
 					},
 					{
 						state:2,
-						text:'精品专题'
+						text:'专题圈'
 					}
 				],
 				imgList:[], // 查看大图
 				handpickList:[] ,// 精选单品
 				specialList:[], // 好货专场
+				specialRing:[], // 专题圈
 				loadingText: '加载中...',
 				loadingType: 0,//定义加载方式 0---contentdown  1---contentrefresh 2---contentnomore
 				contentText: {
@@ -134,7 +148,7 @@
 		// 下拉刷新
 		onPullDownRefresh() {
 			//下拉刷新的时候请求一次数据
-			this.gethandpickList();
+			this.cuttab(this.tabCurrentIndex);
 		},
 		// 上拉加载
 		onReachBottom() {
@@ -145,13 +159,16 @@
 				clearTimeout(self.timer);
 			}
 			self.timer = setTimeout(function() {
-				self.getmoreData();
+				self.getmoreData(); //加载更多
 			}, 300);
 		},
-		// 挂载完成
-		mounted() {
+		onLoad() {
 			//获取列表数据
 			this.cuttab(this.tabCurrentIndex);
+		},	
+		// 挂载完成
+		mounted() {
+			
 		},
 		// 方法
 		methods: {
@@ -168,12 +185,16 @@
 						this.specialList = []
 						this.getspecialList()
 						break;
+					case 2: //专题圈
+						this.specialRing = []
+						this.getspecialRing()
+						break;	
 					default:
 						break;
 				}
 				
 			},
-			// 
+			
 			//获取精选单品列表数据
 			gethandpickList() {
 				let self = this
@@ -184,9 +205,17 @@
 					if(res.code == 1){
 						self.min_id = res.min_id;//获取下一页的参数值
 						self.handpickList = self.disposeText(res.data)
+					}else{
+						uni.showToast({
+						    title: res.msg,
+						    duration: 1500,
+							icon:'none'
+						});
 					}
+					uni.hideNavigationBarLoading();
 				})
-			},	
+			},
+			
 			// 好货专场
 			getspecialList(){
 				let self = this
@@ -197,9 +226,38 @@
 					if(res.code == 1){
 						self.min_id = res.min_id;//获取下一页的参数值
 						self.specialList = self.disposeText2(res.data)
+					}else{
+						uni.showToast({
+						    title: res.msg,
+						    duration: 1500,
+							icon:'none'
+						});
 					}
+					uni.hideNavigationBarLoading();
 				})
 			},
+			
+			// 专题圈
+			getspecialRing(){
+				let self = this
+				self.min_id = 1;
+				self.loadingType = 0;
+				uni.showNavigationBarLoading();
+				this.$tools.apiGet('api/get_subject/apikey/'+this.CONFIGAPI.apikey).then(function(res){
+					if(res.code == 1){
+						// self.min_id = res.min_id;//获取下一页的参数值
+						self.specialRing = res.data
+					}else{
+						uni.showToast({
+						    title: res.msg,
+						    duration: 1500,
+							icon:'none'
+						});
+					}
+					uni.hideNavigationBarLoading();
+				})
+			},
+			
 			// 加载更多
 			getmoreData() {
 				let self = this,urls=''
@@ -210,11 +268,13 @@
 					urls='api/selected_item/apikey/'+this.CONFIGAPI.apikey+'/min_id/'+this.min_id
 				}else if(self.tabCurrentIndex ==1){
 					urls='api/subject_hot/apikey/'+this.CONFIGAPI.apikey+'/min_id/'+this.min_id
-				}
+				}else{
+					return
+				}	
 				self.loadingType = 1;
 				uni.showNavigationBarLoading();//显示加载动画
 				this.$tools.apiGet(urls).then(function(res){
-					if (res.min_id == 0) {//没有数据
+					if (res.min_id == 0 || res.data==[]) {//没有数据
 						self.loadingType = 2;
 						uni.hideNavigationBarLoading();//关闭加载动画
 						return;
@@ -229,6 +289,7 @@
 					uni.hideNavigationBarLoading();//关闭加载动画
 				})
 			},
+			
 			// 处理富文本
 			disposeText(datas){
 				let self = this
@@ -244,6 +305,7 @@
 				}
 				return lists
 			},
+			
 			// 处理富文本2
 			disposeText2(datas){
 				let self = this
@@ -259,6 +321,7 @@
 				}
 				return lists
 			},
+			
 			// 点击大图
 			preview(res,itempic){ 
 				let myindex = res.currentTarget.id;  
@@ -268,11 +331,20 @@
 					current:myindex  
 				})  
 			},
+			
 			// 去详情页
 			gotoDetail(id){
 				uni.navigateTo({
 					url: '/pages/index/detail?itemid='+id
 				});
+			},
+			
+			//去专场圈
+			gotoSpecial(id,title){
+				uni.navigateTo({
+					url:'/pages/community/specialList?name='+id+"&title="+title
+				})
+				
 			}
 		}
 		
@@ -339,12 +411,16 @@
 	.itemTop image{width: 80rpx;height: 80rpx;margin-right: 20rpx;border-radius: 100%;}
 	.titleWrap{flex: 1;}
 	.titleWrap .tag{font-size: 26rpx;color: #666;}
-	.share{width: 85rpx;height:35rpx;line-height: 35rpx;font-size:28rpx;color:#ffffff;padding:10rpx 15rpx 10rpx 65rpx;border-radius: 30rpx;background:#FF9500 url(../../static/images/icon/fx_icon.png) no-repeat 13% center;background-size:35rpx 35rpx}
+	.share{height:35rpx;line-height: 35rpx;font-size:28rpx;color:#ffffff;padding:10rpx 15rpx 10rpx 55rpx;border-radius: 30rpx;background:#FF9500 url(../../static/images/icon/fx_icon.png) no-repeat 13% center;background-size:35rpx 35rpx}
 	.itemConten{padding:15rpx;font-size: 30rpx;}
 	.itemImg{padding:10rpx 0rpx;display: flex;flex-wrap: wrap;}
 	.itemImg .boxImg{width: 208rpx;margin-left:15rpx;margin-bottom: 10rpx;position: relative;}
 	.itemImg .boxImg image{width: 100%;height: 208rpx;}
 	.itemImg .boxImg .itemendprice{text-align: center;color: #FFFFFF;font-size:26rpx;background: #e42424;position: absolute;bottom:0rpx;left: 0;right: 0;z-index: 2;padding:10rpx 0}
+	
+	.listItem .itemWrap .imgWrap{position: relative;width: 100%;}
+	.listItem .itemWrap .imgWrap image{width: 100%;}
+	.listItem .itemWrap .imgWrap .times{position: absolute;right: 30rpx;bottom: 20rpx;padding: 8rpx 10rpx;border: 1rpx solid #FFFFFF;border-radius: 20rpx;color: #FFFFFF;background: #05a6fe;font-size: 26rpx;}
 	
 	.itemBottom{border-radius: 20rpx;}
 	.boxBottom{padding: 15rpx;background: #f4f4f4;display: flex;border-radius: 20rpx;}

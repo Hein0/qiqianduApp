@@ -155,6 +155,12 @@ export default {
 				console.log(res);
 				if(res.code == 1){
 					self.hotWords = res.data || []
+				}else{
+					uni.showToast({
+						title: res.msg,
+						duration: 1500,
+						icon:'none'
+					});
 				}
 			})
 		},
@@ -166,7 +172,11 @@ export default {
 				if(res.code == 1){
 					self.likeList = res.item_info || []
 				}else{
-					
+					uni.showToast({
+						title: res.msg,
+						duration: 1500,
+						icon:'none'
+					});
 				}
 			})
 		},
@@ -333,7 +343,9 @@ export default {
 	.bannerGap .container .item-warp .price .ruling .original{color: #555555; text-decoration: line-through;font-size:26rpx}
 	.salesWrap{display: flex;}
 	.salesWrap .sales{font-size: 28rpx;color:#666;flex: 1;}
-	.salesWrap .bond{font-size: 26rpx;background: #e42424;color: #FFFFFF;padding:5rpx 10rpx}
+	.salesWrap .bond{font-size: 26rpx;background: #e42424;color: #FFFFFF;padding:5rpx 15rpx;position: relative;}
+	.salesWrap .bond::before{position: absolute;width: 20rpx;height: 20rpx;content: "";left: -13rpx; top: 10rpx;background: #FFF;display: block;border-radius: 20rpx;}
+	.salesWrap .bond::after{position: absolute;width: 20rpx;height: 20rpx;content: "";right: -13rpx; top: 10rpx;background: #FFF;display: block;border-radius: 20rpx;}
 	
 
 </style>
