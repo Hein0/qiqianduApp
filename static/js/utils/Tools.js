@@ -168,16 +168,16 @@ const Tools = {
 				fail: (res) => {
 					console.log(res)
 					this.hideLoading();
+                    uni.stopPullDownRefresh(); // 停止当前页面的下拉刷新。
 					if (res.errMsg == "request:fail " || res.errMsg == 'request:fail error') {
 						this.showToast('网络连接失败，请稍候重试！');
 					} else {
-						// this.showToast(`服务器异常，请稍候重试！`);
 						this.showToast('网络连接失败，请稍候重试！');
 					}
 					reject(res);
 				},
 				complete: (res) => {
-					uni.stopPullDownRefresh();
+					uni.stopPullDownRefresh(); // 可以停止当前页面的下拉刷新。
 				}
 			});
 		})
@@ -230,10 +230,11 @@ const Tools = {
 				fail: (res) => {
 					this.hideLoading();
 					this.showToast('网络连接失败，请检查网络');
+                    uni.stopPullDownRefresh(); // 可以停止当前页面的下拉刷新。
 					reject(res);
 				},
 				complete: (res) => {
-					uni.stopPullDownRefresh();
+					uni.stopPullDownRefresh(); // 可以停止当前页面的下拉刷新。
 				}
 			});
 		})

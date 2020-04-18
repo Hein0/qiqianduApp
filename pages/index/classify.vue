@@ -190,7 +190,7 @@
 	.title {line-height: 80rpx;position: relative;font-size: 30rpx;color: #666;height: 80rpx;text-align: center;}
 	.goods {display: flex; flex-wrap: wrap;}
 	.goods .boxItem{width: 176rpx;margin-bottom: 15rpx;}
-	.goods .boxItem image {width: 60%;height: calc(71.44vw / 3 * .6);margin: 0 auto;}
+	.goods .boxItem image {width: 60%;height: calc(71.44vw / 3 * .6);margin: 0 auto;border-radius: 50%;}
 	.texts {font-size: 26rpx;color: #333;padding: 5px 0;overflow: hidden;}
 	
 	

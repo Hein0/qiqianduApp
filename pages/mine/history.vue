@@ -144,6 +144,8 @@
 	.content .price .original{color: #555555;font-size:26rpx;flex:1;text-align: right;}
 	.content .salesWrap{display: flex;}
 	.content .salesWrap .sales{font-size: 28rpx;color:#666;flex: 1;}
-	.content .salesWrap .bond{font-size: 26rpx;background: #e42424;color: #FFFFFF;padding:5rpx 10rpx}
-	
+	.content .salesWrap .bond{font-size: 26rpx;background: #e42424;color: #FFFFFF;padding:5rpx 15rpx;position: relative;}
+	.salesWrap .bond::before{position: absolute;width: 20rpx;height: 20rpx;content: "";left: -13rpx; top: 10rpx;background: #FFF;display: block;border-radius: 20rpx;}
+	.salesWrap .bond::after{position: absolute;width: 20rpx;height: 20rpx;content: "";right: -13rpx; top: 10rpx;background: #FFF;display: block;border-radius: 20rpx;}
+    
 </style>

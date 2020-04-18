@@ -24,9 +24,9 @@
 					<!-- <view v-for="(newsitem,index2) in tab.data" :key="newsitem.id">
 						<choiceness :options="newsitem" @close="close(index1,index2)" @click="goDetail(newsitem)"></choiceness>
 					</view> -->
-					<view>
-						<choiceness @close="close()" @click="goDetail()"></choiceness>
-					</view>
+                    <view v-if="tabIndex == 0">
+                        <choiceness :current="tabIndex" :dataList="ChoicenessList" @close="close()" @click="goDetail()"></choiceness>
+                    </view>
 					<view class="loading-more">
 						<text class="loading-more-text">{{tab.loadingText}}</text>
 					</view>
@@ -55,35 +55,65 @@
 				newsList: [],
 				cacheTab: [],
 				tabIndex: 0,
+                // 0全部，，，，，，，，，，，，，，，，，
 				tabBars: [{
 				    name: '精选',
-				    id: '精选'
+				    id: '0'
 				}, {
-				    name: '猜你喜欢',
-				    id: 'cainixihuan'
+				    name: '美食',
+				    id: '11'
 				}, {
-				    name: '体育',
-				    id: 'tiyu'
+				    name: '女装',
+				    id: '1'
 				}, {
-				    name: '热点',
-				    id: 'redian'
+				    name: '美妆',
+				    id: '4'
 				}, {
-				    name: '财经',
-				    id: 'caijing'
+				    name: '男装',
+				    id: '2'
 				}, {
-				    name: '娱乐',
-				    id: 'yule'
+				    name: '居家日用',
+				    id: '10'
 				}, {
-				    name: '军事',
-				    id: 'junshi'
+				    name: '鞋品',
+				    id: '6'
 				}, {
-				    name: '历史',
-				    id: 'lishi'
+				    name: '儿童',
+				    id: '8'
 				}, {
-				    name: '本地',
-				    id: 'bendi'
+				    name: '母婴',
+				    id: '9'
+				}, {
+				    name: '内衣',
+				    id: '3'
+				}, {
+				    name: '配饰',
+				    id: '5'
+				}, {
+				    name: '箱包',
+				    id: '7'
+				}, {
+				    name: '数码',
+				    id: '12'
+				}, {
+				    name: '家电',
+				    id: '13'
+				}, {
+				    name: '车品',
+				    id: '15'
+				}, {
+				    name: '文体',
+				    id: '16'
+				}, {
+				    name: '宠物',
+				    id: '17'
+				}, {
+				    name: '其他',
+				    id: '14'
 				}],
 				scrollInto: "",
+                ChoicenessList: [],// 精选列表
+                min_id:1, // 分页数
 			}
 		},
 		// 监听页面加载时
@@ -95,17 +125,57 @@
 			        loadingText: '加载更多...'
 			    });
 			});
+            
 		},
+        // 挂载完成
+        mounted() {
+            if(this.tabIndex == 0) {
+                this.getChoicenessList() // 获取精选列表
+            }
+            
+        },
 		// 方法
 		methods: {
+            //跳转到搜索页
 			goSearchPage() {
 				uni.switchTab({
 					url:'/pages/search/search'
 				})
 			},
+            // 获取精选列表数据
+            getChoicenessList() {
+                let self = this
+                this.$tools.apiGet('api/column/apikey/Hein/type/1/back/10/min_id/'+self.min_id).then(function(res){
+                	if(res.code == 1){
+                		self.ChoicenessList = res.data || []
+                        self.min_id = res.min_id || ''
+                	} else {
+                        uni.showToast({
+                        	title: res.msg,
+                        	duration: 1500,
+                        	icon:'none'
+                        });
+                    }
+                })
+            },
+            // 加载更多精选列表数据
+            getChoicenessList2() {
+                let self = this
+                this.$tools.apiGet('api/column/apikey/Hein/type/1/back/10/min_id/'+self.min_id).then(function(res){
+                	if(res.code == 1){
+                		self.ChoicenessList = self.ChoicenessList.concat(res.data) || []
+                        self.min_id = res.min_id || ''
+                	} else {
+                        uni.showToast({
+                        	title: res.msg,
+                        	duration: 1500,
+                        	icon:'none'
+                        });
+                    }
+                })
+            },
 			// 点击tap
 			ontabtap(e) {
-				
 			    let index = e.target.dataset.current || e.currentTarget.dataset.current;
 				console.log(index)
 			    this.switchTab(index);
@@ -147,6 +217,9 @@
 			// 加载更多
 			loadMore(e) {
 			    setTimeout(() => {
+                    if(this.tabIndex ==0) {
+                       this.getChoicenessList2() 
+                    }
 			        // this.getList(this.tabIndex);
 			    }, 500)
 			},
@@ -228,7 +301,7 @@
 	}
 	.uni-tab-item-title-active {
 	    color: #05a6fe;
-		font-size: 35rpx;
+		font-size: 33rpx;
 	}
 	
 	

@@ -103,7 +103,7 @@
 			"pagePath": "pages/community/community",
 			"iconPath": "static/images/social_nosel.png",
 			"selectedIconPath": "static/images/social_sel.png",
-			"text": "仟度圈"
+			"text": "仟渡圈"
 		},
 		{
 			"pagePath": "pages/mine/mine",
@@ -115,7 +115,7 @@
 	// 底部导航样式
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
-		"navigationBarTitleText": "柒仟度",
+		"navigationBarTitleText": "柒仟渡",
 		"navigationBarBackgroundColor": "#F8F8F8",
 		"backgroundColor": "#F8F8F8"
 	}

@@ -9,11 +9,32 @@
 					</view>
 		            <view class="header-title-wrap" v-show="showAbs">
 						<view class="detail_anchor_wrap">
-							<text v-for="(item,index) in anchor_wrap" @tap="anchorTap(index)" :class="{'actives':anchorIndex==index}">{{item}}</text>
+                            <text v-for="(item,index) in anchor_wrap" @tap="anchorTap(index)" :class="{'actives':anchorIndex==index}">{{item}}</text>
 						</view>
 		            </view>
 					<view class="headerRightMenu">
-						<text class="menu"></text>
+						<text class="menu" @click="isShowNewListFun"></text>
+                        <!-- 二级菜单-->
+                        <view class="H-newlist" :class="{'active':isShowNewList==true}">
+                            <view class="HnewlistWrap">
+                                <view class="listItem" @click="gotopage('/pages/index/index')">
+                                    <image src="../../static/images/home_nosel.png" mode=""></image>
+                                    <text>首页</text>
+                                </view>
+                                <view class="listItem" @click="gotopage('/pages/index/classify')">
+                                    <image src="../../static/images/home_nosel.png" mode=""></image>
+                                    <text>分类</text>
+                                </view>
+                                <view class="listItem" @click="gotopage('/pages/search/search')">
+                                    <image src="../../static/images/home_nosel.png" mode=""></image>
+                                    <text>搜索</text>
+                                </view>
+                                <view class="listItem" @click="gotopage('/pages/mine/mine')">
+                                    <image src="../../static/images/home_nosel.png" mode=""></image>
+                                    <text>我的</text>
+                                </view>
+                            </view>
+                        </view>
 					</view>
 		        </view>
 		    </view>
@@ -134,6 +155,7 @@
 	            interval: 2000, //自动切换时间间隔
 	            duration: 500, // 滑动时长
 				nav:false, // 顶部背景颜色
+                isShowNewList:false, // 二级菜单
 				imgList:[],
 				detaildata:{}, // 产品详情页的数据
 				showAbs:false,
@@ -165,8 +187,7 @@
 			let that = this
 		},
 		//挂载完成
-		mounted(){
-				
+		mounted(){	
 			//获取详情数据
 			this.getDetaidata()
 			this.getRecommend() //获取推荐数据
@@ -306,7 +327,29 @@
 				uni.switchTab({
 					url:"/pages/index/index"
 				})
-			},	
+			},
+            
+            // 显示隐藏二级菜单
+            isShowNewListFun(){
+                if(this.isShowNewList == false){
+                    this.isShowNewList = true
+                }else{
+                    this.isShowNewList = false
+                }
+            },
+            
+            // 二级页面跳转路由
+            gotopage(page){
+                if(page == '/pages/index/index' || page == '/pages/mine/mine' || page == '/pages/search/search'){
+                   uni.switchTab({
+                   	url:page
+                   }) 
+                }else{
+                   uni.navigateTo({
+                   	url:page
+                   }); 
+                }
+            },
 			
 			// 点击大图
 		    preview(res){  
@@ -409,10 +452,17 @@
 	.detail_anchor_wrap  text{flex: 1;text-align: center;}
 	.detail_anchor_wrap  text.actives{color:#FFFF00 !important;font-size: 32rpx;}
 	.headerLeftMenu{background: #05a6fe;border-radius: 100%;height: 60rpx;width: 60rpx;display: flex;}
-	.headerRightMenu{background: #05a6fe;border-radius: 50%;height: 60rpx;width: 60rpx;display: flex;}
+	.headerRightMenu{background: #05a6fe;border-radius: 50%;height: 60rpx;width: 60rpx;display: flex;position: relative;}
 	.backIcon{height: 60rpx;width: 60rpx;border-radius: 50%;background: url('../../static/images/left_bai_icon.png') no-repeat center center;background-size: 50rpx 50rpx;} 
 	.menu{height: 60rpx;width: 60rpx;border-radius: 50%;background: url('../../static/images/icon/sprite_bai_icon.png') no-repeat center center;background-size: 50rpx 50rpx;}   
-	
+	.H-newlist{position: absolute;top: 80rpx;width: 200rpx;text-align: center;background: #05a6fe;overflow: inherit; right: 5rpx;border-radius: 10rpx;transform-origin: center;-webkit-transition: all .4s ease 0s;padding-bottom: 5rpx;transform: translateY(0) translateX(100%);opacity: 0;}
+    .H-newlist.active{position: absolute;transform: translateY(0) translateX(0);opacity: 1;z-index: 20;}
+    .H-newlist .HnewlistWrap:before{content: "";width: 0; height: 0;border-left: 7px transparent solid;border-right: 7px transparent solid;border-bottom: 7px #05a6fe solid;border-top: none;position: absolute; z-index: 1; zoom: 1;right: 8px; top: -7px;}
+    .H-newlist .HnewlistWrap{position: relative;z-index: 5;zoom: 1;}
+    .H-newlist .HnewlistWrap .listItem{font-size: 24rpx;margin: 0 12rpx;border-bottom: 1rpx #DDEEDD solid;color: #FFFFFF;padding-left: 35rpx;display: flex;line-height: 70rpx;text-align: center;}
+    .H-newlist .HnewlistWrap .listItem:last-child{border-bottom: none;}
+    .H-newlist .HnewlistWrap .listItem image{width: 45rpx;height: 45rpx;margin-right: 8rpx;margin-top: 10rpx;}
+    
 	.padding-wrap{width: 750rpx;display: block;height: 100%;}
 	.infoWrap{padding:15rpx 15rpx 20rpx;background:#FFFFFF;}
 	.loanbond{display: flex;width: 720rpx;height: 160rpx;text-align: center;padding: 15rpx 0rpx;background: url('../../static/images/yhj.png') no-repeat center center;background-size:700rpx 160rpx;}

@@ -1,5 +1,5 @@
 {
-  "name": "qiqianduApp",
+  "name": "柒仟渡",
   "version": "1.0.0",
   "description": "",
   "main": "main.js",
@@ -10,6 +10,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@dcloudio/uni-ui": "^1.1.0"
+    "@dcloudio/uni-ui": "^1.1.9"
   }
 }

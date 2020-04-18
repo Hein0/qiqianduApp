@@ -240,7 +240,7 @@ export default {
 		/* width: 615rpx; */
 		display: flex;
 		flex: 1;
-		height: 60rpx;
+		/* height: 60rpx; */
 		padding: 10rpx 60rpx 10rpx 80rpx;
 		box-sizing: border-box;
 		background-color: #FFFFFF;

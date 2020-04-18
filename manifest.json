@@ -1,15 +1,15 @@
 {
-    "name" : "qiqianduApp",
-    "appid" : "__UNI__1EAA226",
+    "name" : "柒仟渡",
+    "appid" : "__UNI__3081241",
     "description" : "",
-    "versionName" : "1.0.0",
+    "versionName" : "1.0.0", //代表：大。中。小。日期
     "versionCode" : "100",
     "transformPx" : false,
     /* 5+App特有相关 */
     "app-plus" : {
         "usingComponents" : true,
         "splashscreen" : {
-            "alwaysShowBeforeRender" : false,
+            "alwaysShowBeforeRender" : true,
             "waiting" : true,
             "autoclose" : true,
             "delay" : 0
@@ -48,34 +48,77 @@
             /* ios打包配置 */
             "ios" : {},
             /* SDK配置 */
-            "sdkConfigs" : {}
+            "sdkConfigs" : {
+                "ad" : {}
+            },
+            "icons" : {
+                "android" : {
+                    "hdpi" : "unpackage/res/icons/72x72.png",
+                    "xhdpi" : "unpackage/res/icons/96x96.png",
+                    "xxhdpi" : "unpackage/res/icons/144x144.png",
+                    "xxxhdpi" : "unpackage/res/icons/192x192.png"
+                },
+                "ios" : {
+                    "appstore" : "unpackage/res/icons/1024x1024.png",
+                    "ipad" : {
+                        "app" : "unpackage/res/icons/76x76.png",
+                        "app@2x" : "unpackage/res/icons/152x152.png",
+                        "notification" : "unpackage/res/icons/20x20.png",
+                        "notification@2x" : "unpackage/res/icons/40x40.png",
+                        "proapp@2x" : "unpackage/res/icons/167x167.png",
+                        "settings" : "unpackage/res/icons/29x29.png",
+                        "settings@2x" : "unpackage/res/icons/58x58.png",
+                        "spotlight" : "unpackage/res/icons/40x40.png",
+                        "spotlight@2x" : "unpackage/res/icons/80x80.png"
+                    },
+                    "iphone" : {
+                        "app@2x" : "unpackage/res/icons/120x120.png",
+                        "app@3x" : "unpackage/res/icons/180x180.png",
+                        "notification@2x" : "unpackage/res/icons/40x40.png",
+                        "notification@3x" : "unpackage/res/icons/60x60.png",
+                        "settings@2x" : "unpackage/res/icons/58x58.png",
+                        "settings@3x" : "unpackage/res/icons/87x87.png",
+                        "spotlight@2x" : "unpackage/res/icons/80x80.png",
+                        "spotlight@3x" : "unpackage/res/icons/120x120.png"
+                    }
+                }
+            }
         }
     },
-	/* h5特有相关 */
-	"h5" : {
-	    "devServer" : {
-	        "port" : 8080, //端口号
-	        "disableHostCheck" : true,
-			"proxy" : { // 跨域请求
-	            "/api" : {
-	                "target" : "http://v2.api.haodanku.com/", //目标接口域名
-	                "changeOrigin" : true,  //是否跨域
-	                "secure" : false,   // 设置支持https协议的代理
-					"pathRewrite":{
-						"^/api":""
-					}
-	            },
-				"/tao" : {
-				    "target" : "http://h5api.m.taobao.com/", //目标接口域名
-				    "changeOrigin" : true,  //是否跨域
-				    "secure" : false,  // 设置支持https协议的代理
-					"pathRewrite":{
-						"^/tao":""
-					}
-				}
-	        }
-	    }
-	},
+    /* h5特有相关 */
+    "h5" : {
+        "devServer" : {
+            "port" : 8080, //端口号
+            "disableHostCheck" : true,
+            "proxy" : {
+                // 跨域请求
+                "/api" : {
+                    "target" : "http://v2.api.haodanku.com/", //目标接口域名
+                    "changeOrigin" : true, //是否跨域
+                    "secure" : false, // 设置支持https协议的代理
+                    "pathRewrite" : {
+                        "^/api" : ""
+                    }
+                },
+                "/tao" : {
+                    "target" : "http://h5api.m.taobao.com/", //目标接口域名
+                    "changeOrigin" : true, //是否跨域
+                    "secure" : false, // 设置支持https协议的代理
+                    "pathRewrite" : {
+                        "^/tao" : ""
+                    }
+                },
+                "/duo" : {
+                    "target" : "https://p.pinduoduo.com/", //目标接口域名
+                    "changeOrigin" : true, //是否跨域
+                    "secure" : true, // 设置支持https协议的代理
+                    "pathRewrite" : {
+                        "^/duo" : ""
+                    }
+                }
+            }
+        }
+    },
     /* 快应用特有相关 */
     "quickapp" : {},
     /* 小程序特有相关 */

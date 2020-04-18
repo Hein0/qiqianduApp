@@ -79,7 +79,7 @@
             
 	.input-wrap {
 		width: 615rpx;
-		height: 60rpx;
+		/* height: 60rpx; */
 		padding: 10rpx 30rpx 10rpx 80rpx;
 		box-sizing: border-box;
 		background-color: #fff;
@@ -101,7 +101,6 @@
     }        
     .map-wrap .iconfont {
         font-size: 32rpx;
-        margin-right: 5rpx;
     }    
     .map-wrap text {
         font-size: 26rpx;

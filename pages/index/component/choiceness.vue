@@ -17,51 +17,51 @@
 			<view class="scBxivhb">
 				<view class="scIfAKCX">
 					<view class="scEHOje jXFKFG">
-						<image src="../../static/images/home_sel.png" mode=""></image>
+						<image src="../../../static/images/home_sel.png" mode=""></image>
 						<text>ssdf</text>
 					</view>
 					<view class="scEHOje hrPgER">
-						<image src="../../static/images/home_sel.png" mode=""></image>
+						<image src="../../../static/images/home_sel.png" mode=""></image>
 						<text>ssdf</text>
 					</view>
 				</view>
 				<view class="scIfAKCX">
 					<view class="scEHOje jXFKFG">
-						<image src="../../static/images/home_sel.png" mode=""></image>
+						<image src="../../../static/images/home_sel.png" mode=""></image>
 						<text>ssdf</text>
 					</view>
 					<view class="scEHOje hrPgER">
-						<image src="../../static/images/home_sel.png" mode=""></image>
+						<image src="../../../static/images/home_sel.png" mode=""></image>
 						<text>ssdf</text>
 					</view>
 				</view>
 				<view class="scIfAKCX">
 					<view class="scEHOje jXFKFG">
-						<image src="../../static/images/home_sel.png" mode=""></image>
+						<image src="../../../static/images/home_sel.png" mode=""></image>
 						<text>ssdf</text>
 					</view>
 					<view class="scEHOje hrPgER">
-						<image src="../../static/images/home_sel.png" mode=""></image>
+						<image src="../../../static/images/home_sel.png" mode=""></image>
 						<text>ssdf</text>
 					</view>
 				</view>
 				<view class="scIfAKCX">
 					<view class="scEHOje jXFKFG">
-						<image src="../../static/images/home_sel.png" mode=""></image>
+						<image src="../../../static/images/home_sel.png" mode=""></image>
 						<text>ssdf</text>
 					</view>
 					<view class="scEHOje hrPgER">
-						<image src="../../static/images/home_sel.png" mode=""></image>
+						<image src="../../../static/images/home_sel.png" mode=""></image>
 						<text>ssdf</text>
 					</view>
 				</view>
 				<view class="scIfAKCX">
 					<view class="scEHOje jXFKFG">
-						<image src="../../static/images/home_sel.png" mode=""></image>
+						<image src="../../../static/images/home_sel.png" mode=""></image>
 						<text>ssdf</text>
 					</view>
 					<view class="scEHOje hrPgER">
-						<image src="../../static/images/home_sel.png" mode=""></image>
+						<image src="../../../static/images/home_sel.png" mode=""></image>
 						<text>ssdf</text>
 					</view>
 				</view>
@@ -72,66 +72,49 @@
 		<!-- 广告 -->
 		<view class="advertising">
 			<view class="adverItemWrap">
-				<image src="../../static/images/banner.webp"></image>
+				<image src="../../../static/images/banner.webp"></image>
 			</view>
 		</view>
 		<!-- 广告图二 -->
 		<view class="banner-gap">
 			<view class="container">
 				<view class="item-warp">
-					<image src="../../static/images/activation_my.png" mode=""></image>
+					<image src="../../../static/images/activation_my.png" mode=""></image>
 				</view>
 				<view class="item-warp">
-					<image src="../../static/images/activation_my.png" mode=""></image>
+					<image src="../../../static/images/activation_my.png" mode=""></image>
 				</view>
 				<view class="item-warp">
-					<image src="../../static/images/activation_my.png" mode=""></image>
+					<image src="../../../static/images/activation_my.png" mode=""></image>
 				</view>
 				<view class="item-warp">
-					<image src="../../static/images/activation_my.png" mode=""></image>
+					<image src="../../../static/images/activation_my.png" mode=""></image>
 				</view>
 			</view>
 		</view>
-		<banner-item :titleName='"为你推荐"'></banner-item>
+		<banner-item :titleName='"精选优品"'></banner-item>
 		<!-- 列表 -->
 		<view class="goodList">
 			<view class="wrapper">
-				<view class="item" @click="gotoDetail">
+				<view class="item" v-for="(item,index) in dataList" @click="gotoDetail(item.itemid)" :key="index">
 					<view class="isub">
 						<view class="topImg">
-							<image src="../../static/images/activation_my.png" mode=""></image>
+							<image :src="item.itempic" mode=""></image>
 						</view>
 						<view class="textTitle">
-							<text class="channel">渠道</text>
-							标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题
+							<text class="channel">{{item.shoptype | shopType}}</text>
+							{{item.itemtitle}}
 						</view>
 						<view class="price">
-							<text class="ruling">￥100 <text class="original">￥500</text></text>
+							<text class="ruling">￥{{item.itemendprice}} <text class="original">￥{{item.itemprice}}</text></text>
 						</view>
 						<view class="salesWrap">
-							<view class="sales">已售100万</view>
-							<view class="bond">100元劵</view>
+							<view class="sales">已售{{item.itemsale | tranNumber}}{{item.itemsale.length >=5 ? '万' : ''}}</view>
+							<view class="bond">{{item.couponmoney}}元劵</view>
 						</view>
 					</view>
 				</view>
-				<view class="item" @click="gotoDetail">
-					<view class="isub">
-						<view class="topImg">
-							<image src="../../static/images/activation_my.png" mode=""></image>
-						</view>
-						<view class="textTitle">
-							<text class="channel">渠道</text>
-							标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题
-						</view>
-						<view class="price">
-							<text class="ruling">￥100 <text class="original">￥500</text></text>
-						</view>
-						<view class="salesWrap">
-							<view class="sales">已售100万</view>
-							<view class="bond">100元劵</view>
-						</view>
-					</view>
-				</view>
+				
 			</view>
 		</view>
     </view>
@@ -143,12 +126,16 @@
 		components:{
 		    bannerItem
 		},
+        props: [
+            'dataList'
+        ],
 	    data() {
 	        return {
 	            indicatorDots: true, //是否显示面板指示点
 	            autoplay: true, //是否自动切换
 	            interval: 2000, //自动切换时间间隔
 	            duration: 500, // 滑动时长
+                
 				imgList:[
 					require("../../../static/images/ssd.jpg"),
 					require("../../../static/images/activation_my.png"),
@@ -156,7 +143,17 @@
 					
 	        }
 	    },
+        onLoad() {
+        	
+        },
+        computed: {
+        
+        },
+        mounted() {
+            
+        },
 	    methods: {
+            
 			// 点击大图
 	        preview(res){  
 				let myindex = res.currentTarget.id;  
@@ -167,9 +164,9 @@
 				})  
 			},
 			// 去详情页
-			gotoDetail(){
+			gotoDetail(id){
 				uni.navigateTo({
-					url: '/pages/index/detail'
+					url: '/pages/index/detail?itemid='+id
 				});
 			}	
 			
@@ -345,6 +342,8 @@
 	.wrapper .item .isub .price .ruling .original{color: #555555; text-decoration: line-through;font-size:26rpx}
 	.salesWrap{display: flex;}
 	.salesWrap .sales{font-size: 28rpx;color:#666;flex: 1;}
-	.salesWrap .bond{font-size: 26rpx;background: #e42424;color: #FFFFFF;padding:5rpx 10rpx}
+	.salesWrap .bond{font-size: 26rpx;background: #e42424;color: #FFFFFF;padding:5rpx 15rpx;position: relative;}
+    .salesWrap .bond::before{position: absolute;width: 20rpx;height: 20rpx;content: "";left: -13rpx; top: 10rpx;background: #FFF;display: block;border-radius: 20rpx;}
+    .salesWrap .bond::after{position: absolute;width: 20rpx;height: 20rpx;content: "";right: -13rpx; top: 10rpx;background: #FFF;display: block;border-radius: 20rpx;}
 	
 </style>
