@@ -1,4 +1,4 @@
-/**
+ /**
  * 手机号中间以星号代替
  * @param {*} phone
  */
@@ -14,6 +14,18 @@ export function money (money) {
   return cutStr(money).replace(/(\d)(?=(\d{3})+\.)/g, '$1,')
 }
 
+/* 
+ *格式化万字
+ */
+export function calNum (val) {
+    let num = parseFloat(val)
+    if (num < 10000) {
+        num = num
+    } else {
+        num = (num / 10000).toFixed(1) + '万'
+    }
+    return num
+}
 /**
  * 格式化百分比
  */

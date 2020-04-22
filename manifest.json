@@ -88,7 +88,7 @@
     /* h5特有相关 */
     "h5" : {
         "devServer" : {
-            "port" : 8080, //端口号
+            "port" : 8089, //端口号
             "disableHostCheck" : true,
             "proxy" : {
                 // 跨域请求
@@ -108,12 +108,12 @@
                         "^/tao" : ""
                     }
                 },
-                "/duo" : {
-                    "target" : "https://p.pinduoduo.com/", //目标接口域名
-                    "changeOrigin" : true, //是否跨域
-                    "secure" : true, // 设置支持https协议的代理
+                "/japi" : {
+                    "target" : "http://cmsjapi.ffquan.cn/api", //目标接口域名
+                    "changeOrigin" : false, //是否跨域
+                    "secure" : false, // 设置支持https协议的代理
                     "pathRewrite" : {
-                        "^/duo" : ""
+                        "^/japi" : ""
                     }
                 }
             }

@@ -1,7 +1,7 @@
 const Tools = {
 	config: {
 		// apiUrl: 'http://www.qiqiandu.com/',
-		apiUrl: 'http://localhost:8080/'
+		apiUrl: 'http://localhost:8089/'
 
 	},
 	/**
@@ -150,7 +150,7 @@ const Tools = {
 						if (result.code == 1 || result.code == 0) {
 							reslove(result);
 						} else if (result.code == 999) {
-							// this.clearLocalStorage();
+							this.clearLocalStorage();
 							uni.navigateTo({
 								url: '/pages/index/index.vue'
 							})

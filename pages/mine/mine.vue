@@ -83,7 +83,10 @@
 		},
 		//方法
 		methods: {
-			
+            //头像
+			presolink(){
+                console.log(1)
+            },
 			// 浏览历史
 			gotoHistory(){
 				uni.navigateTo({

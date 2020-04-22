@@ -152,7 +152,6 @@ export default {
 		getHotdata(){
 			let self = this
 			this.$tools.apiGet('api/hot_key/apikey/'+this.CONFIGAPI.apikey).then(function(res){
-				console.log(res);
 				if(res.code == 1){
 					self.hotWords = res.data || []
 				}else{
@@ -168,7 +167,6 @@ export default {
 		getlikeList(){
 			let self = this
 			this.$tools.apiGet('api/get_deserve_item/apikey/'+this.CONFIGAPI.apikey).then(function(res){
-				console.log(res);
 				if(res.code == 1){
 					self.likeList = res.item_info || []
 				}else{

@@ -13,6 +13,9 @@ Vue.prototype.$tools = Tools
 Vue.prototype.$queue = Queue
 Vue.prototype.CONFIGAPI = config_
 Vue.prototype.$url = Vue.prototype.$tools.config.apiUrl
+Vue.prototype.isArray = Array.isArray || function (obj) {  
+  return obj instanceof Array;  
+}
 App.mpType = 'app'
 
 const app = new Vue({

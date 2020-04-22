@@ -5,7 +5,7 @@
 		    <view class="header-wrap">
 		        <view class="index-header" :class="nav? 'bg':''">
 					<view class="headerLeftMenu">
-						<text class="backIcon" @click="navigateBack"></text>
+						<text class="backIcon" @tap="navigateBack"></text>
 					</view>
 		            <view class="header-title-wrap" v-show="showAbs">
 						<view class="detail_anchor_wrap">
@@ -13,23 +13,23 @@
 						</view>
 		            </view>
 					<view class="headerRightMenu">
-						<text class="menu" @click="isShowNewListFun"></text>
+						<text class="menu" @tap="isShowNewListFun"></text>
                         <!-- 二级菜单-->
                         <view class="H-newlist" :class="{'active':isShowNewList==true}">
                             <view class="HnewlistWrap">
-                                <view class="listItem" @click="gotopage('/pages/index/index')">
+                                <view class="listItem" @tap="gotopage('/pages/index/index')">
                                     <image src="../../static/images/home_nosel.png" mode=""></image>
                                     <text>首页</text>
                                 </view>
-                                <view class="listItem" @click="gotopage('/pages/index/classify')">
+                                <view class="listItem" @tap="gotopage('/pages/index/classify')">
                                     <image src="../../static/images/home_nosel.png" mode=""></image>
                                     <text>分类</text>
                                 </view>
-                                <view class="listItem" @click="gotopage('/pages/search/search')">
+                                <view class="listItem" @tap="gotopage('/pages/search/search')">
                                     <image src="../../static/images/home_nosel.png" mode=""></image>
                                     <text>搜索</text>
                                 </view>
-                                <view class="listItem" @click="gotopage('/pages/mine/mine')">
+                                <view class="listItem" @tap="gotopage('/pages/mine/mine')">
                                     <image src="../../static/images/home_nosel.png" mode=""></image>
                                     <text>我的</text>
                                 </view>
@@ -90,6 +90,78 @@
 				{{detaildata.itemdesc}}
 			</view>
 		</view>
+        
+        <!-- 评论-->
+        <view class="commentMode">
+            <view class="conment-centent">
+                <view class="conment-title">
+                    <text class="pinglun">评论({{introduce.totalCount | calNum}})</text>
+                    <text class="showAll" @tap="gotoComment">查看更多</text>
+                </view>
+                <view class="conment-item">
+                    <view class="Praise" v-if="introduce.keywords && introduce.keywords.length>0">
+                        <text class="praiseItem" v-for="(items,indexs) in introduce.keywords" :key="indexs">{{items.word}}({{items.count}})</text>
+                    </view>
+                    <view class="conment-itemWrap">
+                        <view class="conment-item-name">{{introduce.name}}</view>
+                        <view class="conment-item-text">{{introduce.hotComment}}</view>
+                    </view>
+                    <view class="conment-itemImg">
+                        <image  v-for="(item,index) in introduce.images" :key="index" :src="item"></image>
+                    </view>
+                </view>
+            </view>
+        </view>
+        
+        <!-- 店铺信息-->
+        <view class="Shop-info">
+            <view class="shopInfoWrap">
+                <view class="shopInfoCent">
+                    <view class="shopInfoCent-logo">
+                        <image :src="shopInfo.shopLogo" mode=""></image>
+                    </view>
+                    <view class="shopInfoCent-desc">
+                        <view class="shopName">{{shopInfo.shopName}}</view>
+                        <view class="shopTxt"><text class="channel">天猫</text>在售有优惠商品<text class="numbers">{{shopInfo.goodsCount}}</text>件</view>
+                    </view>
+                </view>
+                <view class="shopInfoSever">
+                    <view class="severItem">
+                        卖家服务：{{shopInfo.serviceScore}}
+                        <text class="status">{{shopInfo.serviceLevel >=1? '高' : '底'}}</text>
+                    </view>
+                    <view class="severItem">
+                        宝贝描述：{{shopInfo.dsrScore}}
+                        <text class="status">{{shopInfo.dsrLevel >=1? '高' : '底'}}</text>
+                    </view>
+                    <view class="severItem">
+                        物流服务：{{shopInfo.shipScore}}
+                        <text class="status">{{shopInfo.shipLevel >=1? '高' : '底'}}</text>
+                    </view>
+                </view>
+                <view class="shopInfoGoods">
+                    <view class="uni-margin-wrap">
+                    	<scroll-view class="scroll-view_H" scroll-x="true" scroll-left="0">
+                    		<view id="demo1" class="scroll-view-item_H " v-for="(item,index) in shopInfo.listGoodsDisplay" :key="index" @tap="gotoDetail(item.goodsId)">
+                                <view class="scrollViewCen">
+                                    <view class="centImg">
+                                        <image :src="item.pic" mode=""></image>
+                                    </view>
+                                    <view class="centName"> {{item.dtitle}}</view>
+                                    <view class="quan">
+                                        券<text class="quanNumb">{{item.quanJine}}元</text>
+                                    </view>
+                                    <view class="quanAfter">
+                                        券后<text class="quanAfterNmb">￥{{item.jiage}}</text>
+                                    </view>
+                                </view>
+                            </view>
+                    	</scroll-view>
+                    </view>
+                </view>
+            </view>
+        </view>
+        
 		<!-- banner -->
 		<banner-item :titleName='"猜你喜欢"' ref="recommend"></banner-item>
 		<view class="recommendWrap">
@@ -116,8 +188,8 @@
 		<!-- banner -->
 		<banner-item :titleName='"商品详情"' ref="detail"></banner-item>
 		<view class="detailWrap">
-			<rich-text :nodes="pcDescContent"></rich-text>
-			<!-- <image  v-for="(item,index) in imgList" :key="index" :src="item"></image> -->
+			<!-- <rich-text :nodes="pcDescContent"></rich-text> -->
+			<image  v-for="(item,index) in detalImgList" :key="index" :src="item.img" :style="{height: item.height+'rpx'}"></image>
 		</view>
 		<!-- footer -->
 		<view class="footerWrap">
@@ -135,7 +207,7 @@
 				</view>
 				<view class="footerCon">
 					<view class="inputSeca">分享</view>
-					<view class="inputSeca active" @tap="getLoanbond(detaildata.couponurl)">立即购买</view>
+                    <view class="inputSeca active" @tap="getLoanbond(detaildata.couponurl)">立即购买</view>
 				</view>
 			</view>
 		</view>
@@ -165,13 +237,16 @@
 				recommend:[], // 推荐
 				itemid:'', // 订单id
 				pcDescContent:"", //详情图
-				collect: {
+                detalImgList:[],// 详情图列表
+				collect: { // 收藏样式
 				    icon: 'star-o',
 				    name: '收藏',
 				    isCollect: false,
 				},
+                introduce:{}, //评论消息
+                shopInfo:{},//店铺信息
 				historyKey: 'orange-history',
-				collectKey: 'orange-collect'
+				collectKey: 'orange-collect'   // 收藏json数据key
 					
 	        }
 	    },
@@ -179,9 +254,14 @@
 		computed: {
 			
 		},
+        //监听页面加载，其参数为上个页面传递的数据，参数类型为Object（用于页面传参）
 		onLoad: function(e) {
 			this.itemid = e.itemid
 		},
+        //监听页面隐藏
+        onHide(){
+            
+        },
 		// 创建完成
 		created(){
 			let that = this
@@ -190,15 +270,22 @@
 		mounted(){	
 			//获取详情数据
 			this.getDetaidata()
-			this.getRecommend() //获取推荐数据
-			this.getDetailImg() // 获取详情页图
+            //获取推荐数据
+			this.getRecommend() 
+            //店铺信息
+            this.getshopUserInfo()
+            //评论
+            this.getComment()
+            // 获取详情页图
+			this.getDetailImg() 
 		},
 		methods: {
 			// 返回
 			navigateBack() {
 				uni.navigateBack()
 			},
-			
+            
+			//头部锚点tap
 			anchorTap(index){
 				let dom = ""
 				if(index == 0){
@@ -220,14 +307,52 @@
 				    }).exec()
 				}).exec();
 			},
-			
+            
+            //获取评论
+            getComment(){
+                let self = this
+                uni.request({
+                    url: 'http://cmsjapi.ffquan.cn/api/goods/get-comment-introduce?goodsId='+this.itemid, 
+                    success: (res) => {
+                       if(res.data.code == 0){
+                            self.introduce =  res.data.data || {}
+                        }else{
+                            uni.showToast({
+                                title: res.msg,
+                                duration: 1500,
+                                icon:'none'
+                            });
+                        }
+                    }
+                })
+			},
+            
+            //获取店铺信息
+            getshopUserInfo(){
+                let self = this
+                uni.request({
+                    url: 'http://cmsjapi.ffquan.cn/api/goods/get-goods-shop-info?goodsId='+this.itemid, 
+                    success: (res) => {
+                       if(res.data.code == 0){
+                            self.shopInfo =  res.data.data || {}
+                        }else{
+                            uni.showToast({
+                                title: res.msg,
+                                duration: 1500,
+                                icon:'none'
+                            });
+                        }
+                    }
+                })
+            },
+            
 			//获取详情数据
 			getDetaidata(){
 				let self = this
 				this.$tools.apiGet('api/item_detail/apikey/'+this.CONFIGAPI.apikey+'/itemid/'+this.itemid).then(function(res){
 					if(res.code == 1){
 						self.detaildata = res.data || {}
-						if(self.detaildata.taobao_image!=null && self.detaildata.taobao_image!='') {
+						if(self.detaildata.taobao_image != null && self.detaildata.taobao_image != '') {
 							self.imgList = self.detaildata.taobao_image.split(",")
 						}else{
 							self.imgList.push(self.detaildata.itempic) 
@@ -235,7 +360,8 @@
 						try {
 							//收藏
 						    let isExist = self.$queue.isExist(self.collectKey, res.data.itemid);
-						    if (isExist == true) {
+                            console.log(isExist)
+                            if (isExist == true) {
 						        self.collect.name = "已收藏";
 						        self.collect.icon = "star";
 						        self.collect.isCollect = true;
@@ -264,18 +390,35 @@
 					}
 				})
 			},
+            
 			// 获取详情图片
 			getDetailImg(){
 				let self = this
-				uni.request({
-				    url: "tao/h5/mtop.taobao.detail.getdesc/6.0/?data=%7Bid:\"" + this.itemid + "\"%7D", //仅为示例，并非真实接口地址。
-				    success: (res) => {
-						let richtext=  res.data.data.pcDescContent;
-						    const regex = new RegExp('<img', 'gi');
-						    richtext= richtext.replace(regex, `<img style="width: 100%;"`);
-				        self.pcDescContent = richtext 
-				    }
-				})
+                uni.request({
+                    url: 'http://cmsjapi.ffquan.cn/api/goods/get-goods-detail-img?goodsId='+this.itemid, 
+                    success: (res) => {
+                       if(res.data.code == 0){
+                            // console.log( JSON.parse(res.data.data))
+                       		self.detalImgList = res.data.data ? JSON.parse(res.data.data) : []
+                       	}else{
+                       		uni.showToast({
+                       		    title: res.msg,
+                       		    duration: 1500,
+                       			icon:'none'
+                       		});
+                       	}
+                    }
+                })
+				// uni.request({
+				//     url: "tao/h5/mtop.taobao.detail.getdesc/6.0/?data=%7Bid:\"" + self.itemid + "\"%7D", 
+                //     success: (res) => {
+                //         console.log(res)
+				// 		let richtext=  res.data.data.pcDescContent;
+				// 		    const regex = new RegExp('<img', 'gi');
+				// 		    richtext= richtext.replace(regex, `<img style="width: 100%;"`);
+				//         self.pcDescContent = richtext 
+				//     }
+				// })
 			},
 			
 			// 获取推荐数据
@@ -382,17 +525,30 @@
 				uni.navigateTo({
 					url: '/pages/index/detail?itemid='+id
 				});
-				
 			},
+            
+            // 去评论页
+            gotoComment(){
+            	uni.navigateTo({
+            		url: '/pages/index/comment?itemid='+this.itemid 
+            	});
+            },
 			
 			// 领劵购买
 			getLoanbond(tburl){
-				window.location.href = tburl
+                console.log(tburl)
+                //#ifdef H5 || MP-WEIXIN
+                    window.location.href = tburl
+                //#endif
+                //#ifdef APP-PLUS || APP-PLUS-NVUE
+                    plus.runtime.openURL(tburl)
+                //#endif
 			},
 			
 			//获取字符串的真实长度（字节长度）
 		    getTrueLength(str){
-				if(str==undefined) return '0'
+				if(str == undefined) return '0'
+                if(str == Number) return str+''
 			    let len = str.length, truelen = 0;
 			    for(let x = 0; x < len; x++){
 			        if(str.charCodeAt(x) > 128){
@@ -455,8 +611,8 @@
 	.headerRightMenu{background: #05a6fe;border-radius: 50%;height: 60rpx;width: 60rpx;display: flex;position: relative;}
 	.backIcon{height: 60rpx;width: 60rpx;border-radius: 50%;background: url('../../static/images/left_bai_icon.png') no-repeat center center;background-size: 50rpx 50rpx;} 
 	.menu{height: 60rpx;width: 60rpx;border-radius: 50%;background: url('../../static/images/icon/sprite_bai_icon.png') no-repeat center center;background-size: 50rpx 50rpx;}   
-	.H-newlist{position: absolute;top: 80rpx;width: 200rpx;text-align: center;background: #05a6fe;overflow: inherit; right: 5rpx;border-radius: 10rpx;transform-origin: center;-webkit-transition: all .4s ease 0s;padding-bottom: 5rpx;transform: translateY(0) translateX(100%);opacity: 0;}
-    .H-newlist.active{position: absolute;transform: translateY(0) translateX(0);opacity: 1;z-index: 20;}
+	.H-newlist{position: absolute;top: 80rpx;width: 200rpx;text-align: center;background: #05a6fe;overflow: inherit; right: 5rpx;border-radius: 10rpx;padding-bottom: 5rpx;opacity: 0;}
+    .H-newlist.active{position: absolute;opacity: 1;z-index: 20;}
     .H-newlist .HnewlistWrap:before{content: "";width: 0; height: 0;border-left: 7px transparent solid;border-right: 7px transparent solid;border-bottom: 7px #05a6fe solid;border-top: none;position: absolute; z-index: 1; zoom: 1;right: 8px; top: -7px;}
     .H-newlist .HnewlistWrap{position: relative;z-index: 5;zoom: 1;}
     .H-newlist .HnewlistWrap .listItem{font-size: 24rpx;margin: 0 12rpx;border-bottom: 1rpx #DDEEDD solid;color: #FFFFFF;padding-left: 35rpx;display: flex;line-height: 70rpx;text-align: center;}
@@ -482,6 +638,32 @@
 	.recommend .leftRecommen{color: #f33;width: 150rpx;text-align:center;font-size:30rpx}
 	.recommend .rightRecommen{padding:0rpx 15rpx;color: #333;flex: 1;}
 	
+    /* 店铺信息*/
+    .Shop-info{margin: 20rpx 0;background: #FFFFFF;padding: 10rpx 0;}
+    .Shop-info .shopInfoWrap .shopInfoCent{margin: 0 10rpx;height: 120rpx;display: flex;}
+    .Shop-info .shopInfoWrap .shopInfoCent .shopInfoCent-logo{width:120rpx;height: 120rpx;text-align: center;margin-right: 10rpx;}
+    .Shop-info .shopInfoWrap .shopInfoCent .shopInfoCent-logo image{width: 100rpx;height: 100rpx;}
+    .Shop-info .shopInfoWrap .shopInfoCent .shopInfoCent-desc{flex: 1;}
+    .Shop-info .shopInfoWrap .shopInfoCent .shopInfoCent-desc .shopName{font-size: 32rpx;margin-top: 10rpx;margin-bottom: 5rpx;}
+    .Shop-info .shopInfoWrap .shopInfoCent .shopInfoCent-desc .shopTxt{color: #888;font-size: 26rpx;}
+    .Shop-info .shopInfoWrap .shopInfoCent .shopInfoCent-desc .shopTxt .channel{color: #FFFFFF;background: #fe6900;padding: 0rpx 5rpx;margin-right:10rpx;border-radius: 5rpx;font-size: 22rpx;}
+    .Shop-info .shopInfoWrap .shopInfoCent .shopInfoCent-desc .shopTxt .numbers{color: #e42424;}
+    .Shop-info .shopInfoWrap .shopInfoSever{margin: 0 10rpx;display: flex;text-align: center;padding:0 0 8rpx 0;}
+    .Shop-info .shopInfoWrap .shopInfoSever .severItem{flex: 1;color: #888;font-size: 26rpx;}
+    .Shop-info .shopInfoWrap .shopInfoSever .severItem .status{border-radius: 100%;padding:5rpx;margin-left: 10rpx;background: #f0f0f0;color: #888;display: inline-block;font-size: 18rpx;height:30rpx;width: 30rpx;line-height: 30rpx;}
+    
+    .shopInfoGoods .scroll-view_H{width: auto;white-space: nowrap;display: block;padding: 15rpx;}
+    .shopInfoGoods .scroll-view_H .scroll-view-item_H{display: inline-block;width: 30%;height: 100%;flex-shrink: 0;}
+    .shopInfoGoods .scroll-view_H .scroll-view-item_H .scrollViewCen{height: 100%;margin-right: 15rpx;}
+    .shopInfoGoods .scroll-view_H .scroll-view-item_H .scrollViewCen .centImg{display: block;width: 100%;height: 100%;}
+    .shopInfoGoods .scroll-view_H .scroll-view-item_H .scrollViewCen .centImg image{width: 100%;display: block;border-radius: 10rpx;max-height: 180rpx;}
+    .shopInfoGoods .scroll-view_H .scroll-view-item_H .scrollViewCen .centName{color: #666;word-break: break-all;text-overflow: ellipsis;overflow: hidden;padding: 10rpx 0 0;margin-bottom: 8rpx;font-size: 28rpx;}
+    .shopInfoGoods .scroll-view_H .scroll-view-item_H .scrollViewCen .quan{color: #FF5351;border: 1rpx solid #FF5351;border-radius: 6rpx;display: inline-block;padding-left: 5rpx;font-size: 26rpx;}
+    .shopInfoGoods .scroll-view_H .scroll-view-item_H .scrollViewCen .quan .quanNumb{background: linear-gradient(90deg,#ff8873 0,#ff4f4f 100%); color: #fff;margin-left: 6rpx;padding: 0 6rpx;}
+    .shopInfoGoods .scroll-view_H .scroll-view-item_H .scrollViewCen .quanAfter { color: #666;font-weight: 500;font-size: 26rpx;line-height: 60rpx;text-overflow: ellipsis;white-space: nowrap;overflow: hidden}
+    .shopInfoGoods .scroll-view_H .scroll-view-item_H .scrollViewCen .quanAfter .quanAfterNmb{color: #ff2b22;font-weight: 500;}
+    
+    
 	/* 猜你喜欢 */
 	.recommendWrap{padding: 20rpx;width: 710rpx;}
 	.recommendWrap .container { display: -webkit-box;display: -ms-flexbox;display: flex;flex-wrap: wrap;}
@@ -489,9 +671,10 @@
 	.recommendWrap .container .item-warp:nth-child(2n){margin-right: 0;}
 	.recommendWrap .container .item-warp .topImg{margin-bottom: 10rpx;display: flex;align-items: center;justify-content: center;}
 	.recommendWrap .container .item-warp .topImg image{width: 280rpx;height: 300rpx;}
+    .recommendWrap .container .item-warp .textTitle{display: -webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;font-size:30rpx;overflow: hidden;line-height: 1.4;}
 	.recommendWrap .container .item-warp .textTitle .channel{background:#fe6900 ;color: #FFFFFF;font-size:24rpx;padding:5rpx 10rpx;margin-right: 10rpx;border-radius: 5rpx;}
-	.recommendWrap .container .item-warp .textTitle{display: -webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;font-size:30rpx;overflow: hidden;line-height: 1.4;}
-	.recommendWrap .container .item-warp .price{display: flex;padding: 8rpx 0rpx;}
+	.recommendWrap .container .item-warp .textTitle .numbers{color: #e42424;}
+    .recommendWrap .container .item-warp .price{display: flex;padding: 8rpx 0rpx;}
 	.recommendWrap .container .item-warp .price .ruling{color: #fe6900;font-size:32rpx}
 	.recommendWrap .container .item-warp .price .ruling .original{color: #555555; text-decoration: line-through;font-size:26rpx}
 	.salesWrap{display: flex;}
@@ -499,9 +682,21 @@
 	.salesWrap .bond{font-size: 26rpx;background: #e42424;color: #FFFFFF;padding:5rpx 10rpx}
 	
 	/* 详情 */
-	.detailWrap{background: #FFFFFF;}
+	.detailWrap{background: #FFFFFF;margin: 0 auto;text-align: center;width: 100%;overflow: hidden;}
+	.detailWrap image{width: 100%;border: none;overflow: hidden;}
 	
-	
+    /* 评论*/
+    .commentMode{margin:20rpx 0;background: #FFFFFF;padding: 15rpx;cursor: pointer;}
+    .conment-centent .conment-title{height: 60rpx;line-height: 60rpx;font-size: 28rpx;display: flex;justify-content: space-between;}
+    .conment-centent .conment-title .showAll{color: #fe3738;position: relative;font-size: 26rpx;}
+    .conment-centent .conment-title .showAll:after{ content: '';display: inline-block; width: 18rpx;height: 18rpx;border-top: 1rpx solid #fe3738;border-right: 1rpx solid #fe3738;transform: rotate(45deg);-webkit-transform: rotate(45deg);}
+    .conment-centent .Praise{padding: 10rpx;}
+    .conment-centent .Praise .praiseItem{padding: 10rpx 15rpx;margin:0 8rpx 15rpx; background: #ffede7;font-size:25rpx;border-radius: 20rpx;display: inline-block;}
+    .conment-item .conment-itemWrap .conment-item-name{color: #888;line-height: 50rpx;font-size:28rpx}
+    .conment-item .conment-itemWrap .conment-item-text{font-size: 28rpx;color: #333;margin-bottom: 15rpx;}
+    .conment-item .conment-itemImg {width: 100%;}
+    .conment-item .conment-itemImg image{width:31%;height: 180rpx;margin-left: 15rpx;margin-bottom: 10rpx;border-radius: 10rpx;}
+    
 	/* footerWrap */
 	.footerWrap .partition{height: 120rpx;}
 	.footer{position: fixed;zoom: 1;bottom: 0;z-index: 999;left:0;width: 710rpx;height: 80rpx;background: #FFFFFF;padding: 15rpx 20rpx;box-shadow: 0 -2px 2px 0 rgba(0,0,0,.1);display:flex;}

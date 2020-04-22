@@ -80,7 +80,14 @@
 				"navigationStyle": "custom"
 			}
 		}
-	],
+	    ,{
+            "path" : "pages/index/comment", // 评论
+            "style" : {
+                "navigationBarTitleText": "评论",
+                "navigationStyle": "custom"
+            }
+        }
+    ],
 	//底部导航
 	"tabBar": {
 		"color": "#707070",
