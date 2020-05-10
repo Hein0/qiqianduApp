@@ -28,20 +28,22 @@
 				<view class="content">
 					<view class="titles"><text class="channel">{{item.shoptype | shopType}}</text>{{item.itemtitle}}</view>
 					<view class="price">
-						<text class="ruling">劵后价￥{{item.itemendprice}} </text>
+						<text class="ruling">劵后￥{{item.itemendprice}} </text>
 						<text class="original">在售价￥{{item.itemprice}}</text>
 					</view>
 					<view class="salesWrap">
-						<view class="sales">已售{{item.itemsale | tranNumber}}{{item.itemsale.length >=5 ? '万' : ''}}</view>
+						<view class="sales">销量{{item.itemsale | tranNumber}}{{item.itemsale.length >=5 ? '万' : ''}}</view>
 						<view class="bond">{{item.couponmoney}}元劵</view>
 					</view>
+                    <view class="shopName">{{item.shopname}}</view>
 				</view>
 			</view>
 			
 		</view>
 		<!-- 暂无数据 -->
 		<noData v-if="noData"></noData>
-		
+		<!-- 返回顶部-->
+		<back-top v-on:TobackTop="backTop" :isShow="isShowBackTop"></back-top>
 	</view>
 </template>
 
@@ -56,7 +58,8 @@
 			return {
 				collectData:[],
 				collectKey: 'orange-collect',
-				noData:true
+				noData:true,
+                isShowBackTop:false, //是否显示返回顶部按钮
 			}
 		},
 		onLoad() {
@@ -80,6 +83,23 @@
 			navigateBack() {
 				uni.navigateBack()
 			},
+            
+            // app 监听滚动事件
+            onPageScroll(obj){
+            	if(obj.scrollTop > 500){
+                    this.isShowBackTop = true
+                } else {
+                    this.isShowBackTop = false
+                }
+            },
+            
+            // 回到顶部
+            backTop(){
+                uni.pageScrollTo({
+                    scrollTop: 0,
+                    duration: 300
+                });
+            },
 			
 			// 去详情页
 			gotoDetail(id){
@@ -133,7 +153,7 @@
 	
 	/* 内容 */
 	.list_box {font-size: 28rpx;padding: 20rpx;width:710rpx}
-	.boxItem{display: flex;background: #FFFFFF;padding: 15rpx;border-radius: 10rpx;margin-bottom: 20rpx;}
+	.boxItem{display: flex;background: #FFFFFF;padding: 20rpx 15rpx;border-radius: 10rpx;margin-bottom: 20rpx;}
 	.imgWrap{width: 180rpx;height: 180rpx;margin-right: 15rpx;}
 	.imgWrap image{width: 180rpx;height: 180rpx;}
 	.content{flex: 1;}
@@ -144,6 +164,9 @@
 	.content .price .original{color: #555555;font-size:26rpx;flex:1;text-align: right;}
 	.content .salesWrap{display: flex;}
 	.content .salesWrap .sales{font-size: 28rpx;color:#666;flex: 1;}
-	.content .salesWrap .bond{font-size: 26rpx;background: #e42424;color: #FFFFFF;padding:5rpx 10rpx}
-	
+	.content .salesWrap .bond{font-size: 26rpx;background: #e42424;color: #FFFFFF;padding:5rpx 15rpx;position: relative;}
+	.content .salesWrap .bond::before{position: absolute;width: 20rpx;height: 20rpx;content: "";left: -13rpx; top: 10rpx;background: #FFF;display: block;border-radius: 20rpx;}
+	.content .salesWrap .bond::after{position: absolute;width: 20rpx;height: 20rpx;content: "";right: -13rpx; top: 10rpx;background: #FFF;display: block;border-radius: 20rpx;}
+    .content .shopName{display: flex;margin-top: 10rpx;color:#666;font-size: 26rpx;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-left: 35rpx;background: url(../../static/images/icon/shop.png) no-repeat left center;background-size: 28rpx 28rpx;}
+
 </style>

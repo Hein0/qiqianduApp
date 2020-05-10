@@ -3,7 +3,7 @@
 		<!-- 头部 -->
 		<view class="pageHead">
 		    <view class="header-wrap">
-		        <view class="index-header" :class="nav? 'bg':''">
+		        <view class="index-header" :class="nav ? 'bg':''">
 					<view class="headerLeftMenu">
 						<text class="backIcon" @tap="navigateBack"></text>
 					</view>
@@ -18,19 +18,19 @@
                         <view class="H-newlist" :class="{'active':isShowNewList==true}">
                             <view class="HnewlistWrap">
                                 <view class="listItem" @tap="gotopage('/pages/index/index')">
-                                    <image src="../../static/images/home_nosel.png" mode=""></image>
+                                    <image src="../../static/images/icon/sy-icon.png" mode=""></image>
                                     <text>首页</text>
                                 </view>
                                 <view class="listItem" @tap="gotopage('/pages/index/classify')">
-                                    <image src="../../static/images/home_nosel.png" mode=""></image>
+                                    <image src="../../static/images/icon/fl-icon.png" mode=""></image>
                                     <text>分类</text>
                                 </view>
                                 <view class="listItem" @tap="gotopage('/pages/search/search')">
-                                    <image src="../../static/images/home_nosel.png" mode=""></image>
+                                    <image src="../../static/images/icon/ss-icon.png" mode=""></image>
                                     <text>搜索</text>
                                 </view>
                                 <view class="listItem" @tap="gotopage('/pages/mine/mine')">
-                                    <image src="../../static/images/home_nosel.png" mode=""></image>
+                                    <image src="../../static/images/icon/wd-icon.png" mode=""></image>
                                     <text>我的</text>
                                 </view>
                             </view>
@@ -181,6 +181,7 @@
 						<view class="sales">已售{{item.itemsale | tranNumber}}{{item.itemsale.length >=5 ? '万' : ''}}</view>
 						<view class="bond">{{item.couponmoney}}元劵</view>
 					</view>
+                    <view class="shopName">{{item.shopname}}</view>
 				</view>
 			</view>
 		</view>
@@ -189,8 +190,9 @@
 		<banner-item :titleName='"商品详情"' ref="detail"></banner-item>
 		<view class="detailWrap">
 			<!-- <rich-text :nodes="pcDescContent"></rich-text> -->
-			<image  v-for="(item,index) in detalImgList" :key="index" :src="item.img" :style="{height: item.height+'rpx'}"></image>
-		</view>
+			<image v-if="detalImgList.length>0" v-for="(item,index) in detalImgList" :key="index" :src="item.img" :style="{height: item.height+'rpx'}"></image>
+            <image v-else v-for="(item,index) in imgList" :key="index" :src="item"></image>
+        </view>
 		<!-- footer -->
 		<view class="footerWrap">
 			<view class="partition"></view>
@@ -211,6 +213,8 @@
 				</view>
 			</view>
 		</view>
+        <!-- 返回顶部-->
+        <back-top v-on:TobackTop="backTop" :isShow="isShowBackTop"></back-top>
 	</view>
 </template>
 
@@ -245,6 +249,7 @@
 				},
                 introduce:{}, //评论消息
                 shopInfo:{},//店铺信息
+                isShowBackTop:false, //是否显示返回顶部按钮
 				historyKey: 'orange-history',
 				collectKey: 'orange-collect'   // 收藏json数据key
 					
@@ -360,7 +365,6 @@
 						try {
 							//收藏
 						    let isExist = self.$queue.isExist(self.collectKey, res.data.itemid);
-                            console.log(isExist)
                             if (isExist == true) {
 						        self.collect.name = "已收藏";
 						        self.collect.icon = "star";
@@ -483,6 +487,7 @@
             
             // 二级页面跳转路由
             gotopage(page){
+                this.isShowNewList = false
                 if(page == '/pages/index/index' || page == '/pages/mine/mine' || page == '/pages/search/search'){
                    uni.switchTab({
                    	url:page
@@ -509,17 +514,30 @@
 			},
 			
 			// 滚动事件
-			handleScroll(top){
-				if(top > 88){
+			handleScroll(top) {
+				if(top > 88) {
 					this.nav = true;
 					this.showAbs = true
-				}else{
+				} else {
 					this.anchorIndex = 0
 					this.showAbs = false
 					this.nav = false;
 				}
+                if(top > 500) {
+                    this.isShowBackTop = true
+                } else {
+                    this.isShowBackTop = false
+                }
 			},
 			
+            // 回到顶部
+            backTop(){
+                uni.pageScrollTo({
+                    scrollTop: 0,
+                    duration: 300
+                });
+            },
+            
 			// 去详情页
 			gotoDetail(id){
 				uni.navigateTo({
@@ -560,10 +578,9 @@
 			    return truelen;
 			}
 		},
-		
 		// 离开该页面需要移除这个监听的事件
 		destroyed(){
-			window.removeEventListener('scroll',this.handleScroll)
+			// window.removeEventListener('scroll',this.handleScroll)
 		}
 		
 	}
@@ -611,13 +628,13 @@
 	.headerRightMenu{background: #05a6fe;border-radius: 50%;height: 60rpx;width: 60rpx;display: flex;position: relative;}
 	.backIcon{height: 60rpx;width: 60rpx;border-radius: 50%;background: url('../../static/images/left_bai_icon.png') no-repeat center center;background-size: 50rpx 50rpx;} 
 	.menu{height: 60rpx;width: 60rpx;border-radius: 50%;background: url('../../static/images/icon/sprite_bai_icon.png') no-repeat center center;background-size: 50rpx 50rpx;}   
-	.H-newlist{position: absolute;top: 80rpx;width: 200rpx;text-align: center;background: #05a6fe;overflow: inherit; right: 5rpx;border-radius: 10rpx;padding-bottom: 5rpx;opacity: 0;}
-    .H-newlist.active{position: absolute;opacity: 1;z-index: 20;}
+	.H-newlist{position: absolute;top: 86rpx;width: 150rpx;text-align: center;background: #05a6fe;overflow: inherit; right: 5rpx;border-radius: 10rpx;padding-bottom: 5rpx;opacity: 0;display: none;}
+    .H-newlist.active{position: absolute;opacity: 1;z-index: 2000;display: block;}
     .H-newlist .HnewlistWrap:before{content: "";width: 0; height: 0;border-left: 7px transparent solid;border-right: 7px transparent solid;border-bottom: 7px #05a6fe solid;border-top: none;position: absolute; z-index: 1; zoom: 1;right: 8px; top: -7px;}
     .H-newlist .HnewlistWrap{position: relative;z-index: 5;zoom: 1;}
-    .H-newlist .HnewlistWrap .listItem{font-size: 24rpx;margin: 0 12rpx;border-bottom: 1rpx #DDEEDD solid;color: #FFFFFF;padding-left: 35rpx;display: flex;line-height: 70rpx;text-align: center;}
+    .H-newlist .HnewlistWrap .listItem{font-size: 24rpx;margin: 0 auto;border-bottom: 1rpx #DDEEDD solid;color: #FFFFFF;padding-left: 15rpx;display: flex;line-height: 70rpx;text-align: center;}
     .H-newlist .HnewlistWrap .listItem:last-child{border-bottom: none;}
-    .H-newlist .HnewlistWrap .listItem image{width: 45rpx;height: 45rpx;margin-right: 8rpx;margin-top: 10rpx;}
+    .H-newlist .HnewlistWrap .listItem image{width: 40rpx;height: 40rpx;margin-right: 10rpx;margin-top: 10rpx;}
     
 	.padding-wrap{width: 750rpx;display: block;height: 100%;}
 	.infoWrap{padding:15rpx 15rpx 20rpx;background:#FFFFFF;}
@@ -634,7 +651,7 @@
 	.channel{color: #FFFFFF;background: #fe6900;padding: 3rpx 8rpx;font-size:25rpx;margin-right:10rpx;border-radius: 5rpx;}
 	.titleTxt{font-size:32rpx}
 	
-	.recommend{padding: 15rpx;background: #FFFFFF;display: flex;margin-top:20rpx}
+	.recommend{padding: 15rpx;background: #FFFFFF;display: flex;}
 	.recommend .leftRecommen{color: #f33;width: 150rpx;text-align:center;font-size:30rpx}
 	.recommend .rightRecommen{padding:0rpx 15rpx;color: #333;flex: 1;}
 	
@@ -642,7 +659,7 @@
     .Shop-info{margin: 20rpx 0;background: #FFFFFF;padding: 10rpx 0;}
     .Shop-info .shopInfoWrap .shopInfoCent{margin: 0 10rpx;height: 120rpx;display: flex;}
     .Shop-info .shopInfoWrap .shopInfoCent .shopInfoCent-logo{width:120rpx;height: 120rpx;text-align: center;margin-right: 10rpx;}
-    .Shop-info .shopInfoWrap .shopInfoCent .shopInfoCent-logo image{width: 100rpx;height: 100rpx;}
+    .Shop-info .shopInfoWrap .shopInfoCent .shopInfoCent-logo image{width: 100rpx;height: 100rpx;border-radius: 20rpx;}
     .Shop-info .shopInfoWrap .shopInfoCent .shopInfoCent-desc{flex: 1;}
     .Shop-info .shopInfoWrap .shopInfoCent .shopInfoCent-desc .shopName{font-size: 32rpx;margin-top: 10rpx;margin-bottom: 5rpx;}
     .Shop-info .shopInfoWrap .shopInfoCent .shopInfoCent-desc .shopTxt{color: #888;font-size: 26rpx;}
@@ -679,9 +696,12 @@
 	.recommendWrap .container .item-warp .price .ruling .original{color: #555555; text-decoration: line-through;font-size:26rpx}
 	.salesWrap{display: flex;}
 	.salesWrap .sales{font-size: 28rpx;color:#666;flex: 1;}
-	.salesWrap .bond{font-size: 26rpx;background: #e42424;color: #FFFFFF;padding:5rpx 10rpx}
-	
-	/* 详情 */
+	.salesWrap .bond{font-size: 26rpx;background: #e42424;color: #FFFFFF;padding:5rpx 15rpx;position: relative;}
+	.salesWrap .bond::before{position: absolute;width: 20rpx;height: 20rpx;content: "";left: -13rpx; top: 10rpx;background: #FFF;display: block;border-radius: 20rpx;}
+	.salesWrap .bond::after{position: absolute;width: 20rpx;height: 20rpx;content: "";right: -13rpx; top: 10rpx;background: #FFF;display: block;border-radius: 20rpx;}
+	.shopName{display: flex;margin-top: 10rpx;color:#666;font-size: 26rpx;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-left: 35rpx;background: url(../../static/images/icon/shop.png) no-repeat left center;background-size: 28rpx 28rpx;}
+    
+    /* 详情 */
 	.detailWrap{background: #FFFFFF;margin: 0 auto;text-align: center;width: 100%;overflow: hidden;}
 	.detailWrap image{width: 100%;border: none;overflow: hidden;}
 	
@@ -690,7 +710,7 @@
     .conment-centent .conment-title{height: 60rpx;line-height: 60rpx;font-size: 28rpx;display: flex;justify-content: space-between;}
     .conment-centent .conment-title .showAll{color: #fe3738;position: relative;font-size: 26rpx;}
     .conment-centent .conment-title .showAll:after{ content: '';display: inline-block; width: 18rpx;height: 18rpx;border-top: 1rpx solid #fe3738;border-right: 1rpx solid #fe3738;transform: rotate(45deg);-webkit-transform: rotate(45deg);}
-    .conment-centent .Praise{padding: 10rpx;}
+    .conment-centent .Praise{padding: 10rpx;max-height: 110rpx;overflow: hidden;}
     .conment-centent .Praise .praiseItem{padding: 10rpx 15rpx;margin:0 8rpx 15rpx; background: #ffede7;font-size:25rpx;border-radius: 20rpx;display: inline-block;}
     .conment-item .conment-itemWrap .conment-item-name{color: #888;line-height: 50rpx;font-size:28rpx}
     .conment-item .conment-itemWrap .conment-item-text{font-size: 28rpx;color: #333;margin-bottom: 15rpx;}

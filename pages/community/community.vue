@@ -68,9 +68,9 @@
 						<view class="titleName">仟度</view>
 						<view class="tag">{{item.addtime | before_time}}</view>
 					</view>
-					<view class="share">
+					<!-- <view class="share">
 						{{item.share_times}} 
-					</view>
+					</view> -->
 				</view>
 				<!-- 内容 -->
 				<view class="itemConten">
@@ -99,8 +99,11 @@
 				
 			</view>
 		</view>
+        <!-- 加载更多-->
 		<uni-load-more v-if="tabCurrentIndex!=2"  :loadingType="loadingType" :contentText="contentText" ></uni-load-more>
-	</view>
+        <!-- 返回顶部-->
+        <back-top v-on:TobackTop="backTop" :isShow="isShowBackTop"></back-top>
+    </view>
 </template>
 
 <script>
@@ -142,7 +145,8 @@
 					contentdown:'',
 					contentrefresh: '努力加载中...',
 					contentnomore: '已经到底啦~',
-				}
+				},
+                isShowBackTop:false, //是否显示返回顶部按钮
 			}
 		},
 		// 下拉刷新
@@ -200,7 +204,9 @@
 				let self = this
 				self.min_id = 1;
 				self.loadingType = 0;
+                // #ifdef H5 || MP-ALIPAY || MP-BAIDU || MP-QQ || MP-WEIXIN
 				uni.showNavigationBarLoading();
+                // #endif
 				this.$tools.apiGet('api/selected_item/apikey/'+this.CONFIGAPI.apikey+'/min_id/'+this.min_id).then(function(res){
 					if(res.code == 1){
 						self.min_id = res.min_id;//获取下一页的参数值
@@ -212,7 +218,9 @@
 							icon:'none'
 						});
 					}
+                    // #ifdef H5 || MP-ALIPAY || MP-BAIDU || MP-QQ || MP-WEIXIN
 					uni.hideNavigationBarLoading();
+                    // #endif
 				})
 			},
 			
@@ -221,7 +229,9 @@
 				let self = this
 				self.min_id = 1;
 				self.loadingType = 0;
+                // #ifdef H5 || MP-ALIPAY || MP-BAIDU || MP-QQ || MP-WEIXIN
 				uni.showNavigationBarLoading();
+                // #endif
 				this.$tools.apiGet('api/subject_hot/apikey/'+this.CONFIGAPI.apikey+'/min_id/'+this.min_id).then(function(res){
 					if(res.code == 1){
 						self.min_id = res.min_id;//获取下一页的参数值
@@ -233,7 +243,9 @@
 							icon:'none'
 						});
 					}
+                    // #ifdef H5 || MP-ALIPAY || MP-BAIDU || MP-QQ || MP-WEIXIN
 					uni.hideNavigationBarLoading();
+                    // #endif
 				})
 			},
 			
@@ -242,7 +254,9 @@
 				let self = this
 				self.min_id = 1;
 				self.loadingType = 0;
+                // #ifdef H5 || MP-ALIPAY || MP-BAIDU || MP-QQ || MP-WEIXIN
 				uni.showNavigationBarLoading();
+                // #endif
 				this.$tools.apiGet('api/get_subject/apikey/'+this.CONFIGAPI.apikey).then(function(res){
 					if(res.code == 1){
 						// self.min_id = res.min_id;//获取下一页的参数值
@@ -254,7 +268,9 @@
 							icon:'none'
 						});
 					}
+                    // #ifdef H5 || MP-ALIPAY || MP-BAIDU || MP-QQ || MP-WEIXIN
 					uni.hideNavigationBarLoading();
+                    // #endif
 				})
 			},
 			
@@ -272,11 +288,15 @@
 					return
 				}	
 				self.loadingType = 1;
+                // #ifdef H5 || MP-ALIPAY || MP-BAIDU || MP-QQ || MP-WEIXIN
 				uni.showNavigationBarLoading();//显示加载动画
+                // #endif
 				this.$tools.apiGet(urls).then(function(res){
 					if (res.min_id == 0 || res.data==[]) {//没有数据
 						self.loadingType = 2;
+                        // #ifdef H5 || MP-ALIPAY || MP-BAIDU || MP-QQ || MP-WEIXIN
 						uni.hideNavigationBarLoading();//关闭加载动画
+                        // #endif
 						return;
 					}
 					self.min_id = res.min_id;//获取下一页的参数值
@@ -286,9 +306,28 @@
 						self.specialList = self.specialList.concat(self.disposeText2(res.data));//将数据拼接在一起
 					}
 					self.loadingType = 0;//将loadingType归0重置
+                    // #ifdef H5 || MP-ALIPAY || MP-BAIDU || MP-QQ || MP-WEIXIN
 					uni.hideNavigationBarLoading();//关闭加载动画
+                    // #endif
 				})
 			},
+            
+            // app 监听滚动事件
+            onPageScroll(obj){
+            	if(obj.scrollTop > 500){
+                    this.isShowBackTop = true
+                } else {
+                    this.isShowBackTop = false
+                }
+            },
+            
+            // 回到顶部
+            backTop(){
+                uni.pageScrollTo({
+                    scrollTop: 0,
+                    duration: 300
+                });
+            },
 			
 			// 处理富文本
 			disposeText(datas){

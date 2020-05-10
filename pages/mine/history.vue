@@ -41,7 +41,8 @@
 		</view>
 		<!-- 暂无数据 -->
 		<noData v-if="noData"></noData>
-		
+		<!-- 返回顶部-->
+		<back-top v-on:TobackTop="backTop" :isShow="isShowBackTop"></back-top>
 	</view>
 </template>
 
@@ -56,7 +57,8 @@
 			return {
 				historyData:[],
 				historyKey: 'orange-history',
-				noData:true
+				noData:true,
+                isShowBackTop:false, //是否显示返回顶部按钮
 			}
 		},
 		onLoad() {
@@ -81,6 +83,23 @@
 				uni.navigateBack()
 			},
 			
+            // app 监听滚动事件
+            onPageScroll(obj){
+            	if(obj.scrollTop > 500){
+                    this.isShowBackTop = true
+                } else {
+                    this.isShowBackTop = false
+                }
+            },
+            
+            // 回到顶部
+            backTop(){
+                uni.pageScrollTo({
+                    scrollTop: 0,
+                    duration: 300
+                });
+            },
+            
 			// 去详情页
 			gotoDetail(id){
 				uni.navigateTo({

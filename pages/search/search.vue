@@ -61,11 +61,11 @@
 						<view class="sales">已售{{item.itemsale | tranNumber}}{{item.itemsale.length >=5 ? '万' : ''}}</view>
 						<view class="bond">{{item.couponmoney}}元劵</view>
 					</view>
+                    <view class="shopName">{{item.shopname}}</view>
 				</view>
-				
 			</view>
 		</view>
-		
+        
 	</view>
   
 </template>
@@ -148,6 +148,7 @@ export default {
 			}
 			
 		},
+        
 		// 获取热门搜索数据
 		getHotdata(){
 			let self = this
@@ -163,6 +164,7 @@ export default {
 				}
 			})
 		},
+        
 		// 获取今日推荐
 		getlikeList(){
 			let self = this
@@ -178,6 +180,7 @@ export default {
 				}
 			})
 		},
+        
 		// 去详情页
 		gotoDetail(id){
 			uni.navigateTo({
@@ -185,6 +188,7 @@ export default {
 			});
 			
 		},
+        
 		// 清除历史记录
 		clearHistoryList(){
 			this.historyList = []
@@ -247,10 +251,16 @@ export default {
 		position: relative;
 	}
 	.input-wrap .inputSeca {
-	    height: 31rpx;
+	    height: 35rpx;
 		width: 100%;
-		line-height: 31rpx;
+		line-height: 35rpx;
 		font-size: 26rpx;
+        /* #ifdef H5 || MP */
+        margin-top: 3rpx;
+        /* #endif*/
+        /* #ifdef APP-PLUS || APP-PLUS-NVUE*/
+        margin-top: 6rpx;
+        /* #endif*/
 	}   
 	.map-wrap{margin-left: 25rpx;}	 
 	.map-wrap .iconfont {
@@ -274,7 +284,7 @@ export default {
 		width: 25rpx;
 		height: 25rpx;
 		position: absolute;
-		top:20rpx;
+		top:18rpx;
 		right: 30rpx;
 		background: url('../../static/images/p7.png') no-repeat center center;
 		background-size: 20rpx 20rpx;
@@ -344,6 +354,6 @@ export default {
 	.salesWrap .bond{font-size: 26rpx;background: #e42424;color: #FFFFFF;padding:5rpx 15rpx;position: relative;}
 	.salesWrap .bond::before{position: absolute;width: 20rpx;height: 20rpx;content: "";left: -13rpx; top: 10rpx;background: #FFF;display: block;border-radius: 20rpx;}
 	.salesWrap .bond::after{position: absolute;width: 20rpx;height: 20rpx;content: "";right: -13rpx; top: 10rpx;background: #FFF;display: block;border-radius: 20rpx;}
-	
+	.shopName{display: flex;margin-top: 10rpx;color:#666;font-size: 26rpx;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-left: 35rpx;background: url(../../static/images/icon/shop.png) no-repeat left center;background-size: 28rpx 28rpx;}
 
 </style>

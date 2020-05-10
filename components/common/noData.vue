@@ -1,7 +1,7 @@
 <template>
    <div class="no-data">
       <slot>
-         <img class="n-img" src="../../static/images/no_data.png" alt="">
+         <img class="n-img" src="@/static/images/no_data.png" alt="">
          <p class="n-txt">暂无数据~</p>
       </slot>
    </div>

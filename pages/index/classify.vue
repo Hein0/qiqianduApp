@@ -23,14 +23,13 @@
 		<view class="list_box">
 			<!-- 菜单左边 -->
 			<view class="left">
-				<scroll-view scroll-y="true" :style="{ 'height':scrollHeight }">
-					<view class="item" v-for="(item,index) in leftArray" :key="index" :class="{ 'active':index==leftIndex }"
-					 :data-index="index" @tap="leftTap(index,item.cid,item.data)">{{item.main_name}}</view>
+				<scroll-view :scroll-y="true" :show-scrollbar="false" :scroll-into-view="scrollInto" :style="{ 'height':scrollHeight }">
+					<view class="item" v-for="(item,index) in leftArray" :key="index" :id='"item-"+index' :class="{ 'active':index==leftIndex }"
+					 :data-index="index" @tap="leftTap($event,index,item.cid,item.data)">{{item.main_name}}</view>
 				</scroll-view>
 			</view>
 			<view class="main">
-				<scroll-view scroll-y="true" :style="{ 'height':scrollHeight }" @scroll="mainScroll" :scroll-into-view="scrollInto"
-				 scroll-with-animation="true" @touchstart="mainTouch" id="scroll-el">
+				<scroll-view :scroll-y="true" :style="{ 'height':scrollHeight }" scroll-with-animation="true" @touchstart="mainTouch" id="scroll-el">
 					<block v-for="(item,index) in mainArray" :key="index">
 						<view class="listItem">
 							<view class="title">
@@ -68,6 +67,7 @@
 				leftIndex: 0, // 下标
 				isMainScroll: false,
 				scrollInto: '',
+                scrollInto:"", // 滚动的id名
 				tipsTop: '0px'
 			}
 		},
@@ -126,14 +126,15 @@
 			mainTouch() {
 				this.isMainScroll = true;
 			},
+            
 			/* 左侧导航点击 */
-			leftTap(index,cid,data) {
-				// let index = e.currentTarget.dataset.index;
+			leftTap(e,index,cid,data) {
+				let inds = e.currentTarget.dataset.index;
 				this.isMainScroll = false;
 				this.cid = cid
 				this.mainArray = data || [];
 				this.leftIndex = Number(index);
-				// this.scrollInto = `item-${index}`;
+				this.scrollInto = `item-${inds}`;
 			}
 		}
 	}

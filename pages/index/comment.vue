@@ -115,7 +115,7 @@
                     success: (res) => {
                        if(res.data.code == 0){
                        		self.commentsData = res.data.data || {}
-                            if(!self.commentsData.comments && !self.commentsData.keywords){
+                            if(self.commentsData.keywords.length<=0){
                                 self.noData = true
                             }
                        	}else{

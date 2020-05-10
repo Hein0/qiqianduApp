@@ -58,12 +58,17 @@
 						<view class="sales">已售{{item.itemsale | tranNumber}}{{item.itemsale.length >=5 ? '万' : ''}}</view>
 						<view class="bond">{{item.couponmoney}}元劵</view>
 					</view>
+                    <view class="shopName">{{item.shopname}}</view>
 				</view>
 			</view>
 		</view>
+        <!-- 没有数据-->
 		<noData v-if="noData"></noData>
+        <!-- 加载更多-->
 		<uni-load-more v-if="classifyList.length>0"  :loadingType="loadingType" :contentText="contentText" ></uni-load-more>
-	</view>
+        <!-- 返回顶部-->
+        <back-top v-on:TobackTop="backTop" :isShow="isShowBackTop"></back-top>
+    </view>
   
 </template>
 <script>
@@ -95,7 +100,8 @@ export default {
 				contentrefresh: '正在加载...',
 				contentnomore: '已经到底啦~',
 			},
-			noData:false
+			noData:false,
+            isShowBackTop:false, //是否显示返回顶部按钮
 		}
 	},
 	onLoad: function(e) {
@@ -187,19 +193,42 @@ export default {
 				return false;
 			}
 			self.loadingType = 1;
+            // #ifdef H5 || MP-ALIPAY || MP-BAIDU || MP-QQ || MP-WEIXIN
 			uni.showNavigationBarLoading();//显示加载动画
+            // #endif
 			this.$tools.apiGet('api/get_keyword_items/apikey/'+this.CONFIGAPI.apikey+'/keyword/'+this.name+'/back/10/sort/'+this.sort+'/min_id/'+this.min_id+'/cid/'+this.cid).then(function(res){
 				if (res.data == null || res.min_id ==res.total) {//没有数据
 					self.loadingType = 2;
+                    // #ifdef H5 || MP-ALIPAY || MP-BAIDU || MP-QQ || MP-WEIXIN
 					uni.hideNavigationBarLoading();//关闭加载动画
+                    // #endif
 					return;
 				}
 				self.min_id = res.min_id;//获取下一页的参数值
 				self.classifyList = self.classifyList.concat(res.data);//将数据拼接在一起
 				self.loadingType = 0;//将loadingType归0重置
+                // #ifdef H5 || MP-ALIPAY || MP-BAIDU || MP-QQ || MP-WEIXIN
 				uni.hideNavigationBarLoading();//关闭加载动画
+                // #endif
 			})
 		},
+        
+        // app 监听滚动事件
+        onPageScroll(obj){
+        	if(obj.scrollTop > 500){
+                this.isShowBackTop = true
+            } else {
+                this.isShowBackTop = false
+            }
+        },
+        
+        // 回到顶部
+        backTop(){
+            uni.pageScrollTo({
+                scrollTop: 0,
+                duration: 300
+            });
+        },
 		
 		// 去详情页
 		gotoDetail(id){
@@ -268,7 +297,7 @@ export default {
 		z-index: 999;
 	}
 	.searchNav {display: -webkit-box;display: -ms-flexbox; display: flex;-ms-flex-pack: distribute;justify-content: space-around;-ms-flex-flow: row nowrap;border-bottom: 1rpx solid #f4f4f4; background: #FFF;}	
-	.searchNav .navItem {display: flex; padding: 20rpx 0;text-align: center;font-size: 30rpx;color: #666;letter-spacing: 0;align-items: center;}	
+	.searchNav .navItem {display: flex; padding: 20rpx 0;text-align: center;font-size: 28rpx;color: #666;letter-spacing: 0;align-items: center;}	
 	.searchNav .navItem.active{color: #0b9aff;}	
 	.searchNav .navItem.active2{color: #0b9aff;}	
 	.searchNav .navItem .tapImg{padding-top:5rpx;padding-left: 5rpx;width: 20rpx;}
@@ -292,8 +321,8 @@ export default {
 	.bannerGap .container .item-warp:nth-child(2n){margin-right: 0;}
 	.bannerGap .container .item-warp .topImg{margin-bottom: 10rpx;display: flex;align-items: center;justify-content: center;}
 	.bannerGap .container .item-warp .topImg image{width: 280rpx;height: 300rpx;}
-	.bannerGap .container .item-warp .textTitle{display: -webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;font-size:30rpx;overflow: hidden;line-height: 1.4;}
-	.bannerGap .container .item-warp .textTitle .channel{background:#fe6900 ;color: #FFFFFF;font-size:24rpx;padding:5rpx 10rpx;margin-right: 10rpx;border-radius: 5rpx;}
+	.bannerGap .container .item-warp .textTitle{display: -webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;font-size:28rpx;overflow: hidden;line-height: 1.4;}
+	.bannerGap .container .item-warp .textTitle .channel{background:#fe6900 ;color: #FFFFFF;font-size:22rpx;padding:5rpx 10rpx;margin-right: 10rpx;border-radius: 5rpx;}
 	.bannerGap .container .item-warp .price{display: flex;padding: 10rpx 0rpx;}
 	.bannerGap .container .item-warp .price .ruling{color: #fe6900;font-size:34rpx}
 	.bannerGap .container .item-warp .price .ruling .original{color: #555555; text-decoration: line-through;font-size:26rpx}
@@ -302,5 +331,5 @@ export default {
 	.salesWrap .bond{font-size: 28rpx;background: #e42424;color: #FFFFFF;padding:5rpx 15rpx;position: relative;}
 	.salesWrap .bond::before{position: absolute;width: 20rpx;height: 20rpx;content: "";left: -13rpx; top: 10rpx;background: #FFF;display: block;border-radius: 20rpx;}
 	.salesWrap .bond::after{position: absolute;width: 20rpx;height: 20rpx;content: "";right: -13rpx; top: 10rpx;background: #FFF;display: block;border-radius: 20rpx;}
-
+    .shopName{display: flex;margin-top: 10rpx;color:#666;font-size: 26rpx;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-left: 35rpx;background: url(../../static/images/icon/shop.png) no-repeat left center;background-size: 28rpx 28rpx;}
 </style>

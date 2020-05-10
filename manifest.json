@@ -88,7 +88,7 @@
     /* h5特有相关 */
     "h5" : {
         "devServer" : {
-            "port" : 8089, //端口号
+            "port" : 8080, //端口号
             "disableHostCheck" : true,
             "proxy" : {
                 // 跨域请求
@@ -118,6 +118,13 @@
                 }
             }
         }
+    },
+    // 各类网络请求的超时时间，单位均为毫秒。
+    "networkTimeout" : {
+        "request" : 120000, // 自定义配置request请求超时时间为120秒
+        "connectSocket" : 60000, // 官方默认60秒
+        "uploadFile" : 60000, // 官方默认60秒
+        "downloadFile" : 60000 // 官方默认60秒
     },
     /* 快应用特有相关 */
     "quickapp" : {},

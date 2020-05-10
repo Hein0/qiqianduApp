@@ -58,12 +58,16 @@
 						<view class="sales">已售{{item.itemsale | tranNumber}}{{item.itemsale.length >=5 ? '万' : ''}}</view>
 						<view class="bond">{{item.couponmoney}}元劵</view>
 					</view>
+                    <view class="shopName">{{item.shopname}}</view>
 				</view>
 				
 			</view>
 		</view>
+        <!-- 加载更多-->
 		<uni-load-more  :loadingType="loadingType" :contentText="contentText" ></uni-load-more>
-	</view>
+        <!-- 返回顶部-->
+        <back-top v-on:TobackTop="backTop" :isShow="isShowBackTop"></back-top>
+    </view>
   
 </template>
 <script>
@@ -92,29 +96,33 @@
 					contentdown:'上拉显示更多',
 					contentrefresh: '正在加载...',
 					contentnomore: '已经到底啦~',
-				}
+				},
+                isShowBackTop:false, //是否显示返回顶部按钮
 			}
 		},
 		onLoad: function(e) {
 			this.val = e.val
-			const than = this
+			const that = this
 			uni.getStorage({
 			    key: 'searchAll_key',
 			    success: function (res) {
-			        than.historyList = res.data
+			        that.historyList = res.data
 			    }
 			});
 		},
+        
 		// 挂载完成
 		mounted() {
 			//获取列表数据
 			this.getdataList();
 		},
+        
 		// 下拉刷新
 		onPullDownRefresh() {
 			//下拉刷新的时候请求一次数据
 			this.getdataList();
 		},
+        
 		// 上拉加载
 		onReachBottom() {
 			//触底的时候请求数据，即为上拉加载更多
@@ -126,7 +134,8 @@
 			self.timer = setTimeout(function() {
 				self.getmoreData();
 			}, 300);
-		},				
+		},
+                
 		// 方法
 		methods: {
 			
@@ -165,7 +174,9 @@
 				if(self.val !=''){
 					self.min_id = 1;
 					self.loadingType = 0;
+                    // #ifdef H5 || MP-ALIPAY || MP-BAIDU || MP-QQ || MP-WEIXIN
 					uni.showNavigationBarLoading();
+                    // #endif
 					this.$tools.apiGet('api/supersearch/apikey/'+this.CONFIGAPI.apikey+'/keyword/'+this.val+'/back/10/sort/'+this.sort+'/min_id/'+this.min_id+'/tb_p/'+1).then(function(res){
 						if(res.code == 1){
 							self.min_id = res.min_id;//获取下一页的参数值
@@ -188,20 +199,43 @@
 					return false;
 				}
 				self.loadingType = 1;
+                // #ifdef H5 || MP-ALIPAY || MP-BAIDU || MP-QQ || MP-WEIXIN
 				uni.showNavigationBarLoading();//显示加载动画
+                // #endif
 				this.$tools.apiGet('api/supersearch/apikey/'+this.CONFIGAPI.apikey+'/keyword/'+this.val+'/back/10/sort/'+this.sort+'/min_id/'+this.min_id+'/tb_p/'+1).then(function(res){
 					if (res.data == [] || res.min_id == 0) {//没有数据
 						self.loadingType = 2;
+                        // #ifdef H5 || MP-ALIPAY || MP-BAIDU || MP-QQ || MP-WEIXIN
 						uni.hideNavigationBarLoading();//关闭加载动画
+                        // #endif
 						return;
 					}
 					self.min_id = res.min_id;//获取下一页的参数值
 					self.searchLists = self.searchLists.concat(res.data);//将数据拼接在一起
 					self.loadingType = 0;//将loadingType归0重置
+                    // #ifdef H5 || MP-ALIPAY || MP-BAIDU || MP-QQ || MP-WEIXIN
 					uni.hideNavigationBarLoading();//关闭加载动画
+                    // #endif
 				})
 			},
 			
+            // app 监听滚动事件
+            onPageScroll(obj){
+            	if(obj.scrollTop > 500){
+                    this.isShowBackTop = true
+                } else {
+                    this.isShowBackTop = false
+                }
+            },
+            
+            // 回到顶部
+            backTop(){
+                uni.pageScrollTo({
+                    scrollTop: 0,
+                    duration: 300
+                });
+            },
+            
 			// 去详情页
 			gotoDetail(id){
 				uni.navigateTo({
@@ -295,9 +329,15 @@
 		position: relative;
 	}
 	.input-wrap .inputSeca {
-	    height: 31rpx;
+	    height: 35rpx;
 		width: 100%;
-		line-height: 31rpx;
+		line-height: 35rpx;
+        /* #ifdef H5 || MP */
+        margin-top: 3rpx;
+        /* #endif*/
+        /* #ifdef APP-PLUS || APP-PLUS-NVUE*/
+        margin-top: 6rpx;
+        /* #endif*/
 		font-size: 26rpx;
 	}    
 	.backIcon{height: 60rpx;width: 70rpx;background: url('../../static/images/left_bai_icon.png') no-repeat 5% center;background-size: 50rpx 50rpx;} 
@@ -318,7 +358,7 @@
 		width: 25rpx;
 		height: 25rpx;
 		position: absolute;
-		top:20rpx;
+		top:18rpx;
 		right: 30rpx;
 		background: url('../../static/images/p7.png') no-repeat center center;
 		background-size: 20rpx 20rpx;
@@ -354,7 +394,7 @@
 		z-index: 999;
 	}
 	.searchNav {display: -webkit-box;display: -ms-flexbox; display: flex;-ms-flex-pack: distribute;justify-content: space-around;-ms-flex-flow: row nowrap;border-bottom: 1rpx solid #f4f4f4; background: #FFF;}	
-	.searchNav .navItem {display: flex;padding: 20rpx 0;text-align: center;font-size: 30rpx;color: #666;letter-spacing: 0;align-items: center;}	
+	.searchNav .navItem {display: flex;padding: 20rpx 0;text-align: center;font-size: 28rpx;color: #666;letter-spacing: 0;align-items: center;}	
 	.searchNav .navItem.active{color: #0b9aff;}	
 	.searchNav .navItem.active2{color: #0b9aff;}
 	.searchNav .navItem .tapImg{padding-top:5rpx;padding-left: 5rpx;width: 20rpx;}
@@ -388,5 +428,6 @@
 	.salesWrap .bond{font-size: 26rpx;background: #e42424;color: #FFFFFF;padding:5rpx 15rpx;position: relative;}
 	.salesWrap .bond::before{position: absolute;width: 20rpx;height: 20rpx;content: "";left: -13rpx; top: 10rpx;background: #FFF;display: block;border-radius: 20rpx;}
 	.salesWrap .bond::after{position: absolute;width: 20rpx;height: 20rpx;content: "";right: -13rpx; top: 10rpx;background: #FFF;display: block;border-radius: 20rpx;}
+    .shopName{display: flex;margin-top: 10rpx;color:#666;font-size: 26rpx;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-left: 35rpx;background: url(../../static/images/icon/shop.png) no-repeat left center;background-size: 28rpx 28rpx;}
 
 </style>

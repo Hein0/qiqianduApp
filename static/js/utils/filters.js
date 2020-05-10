@@ -19,12 +19,13 @@ export function money (money) {
  */
 export function calNum (val) {
     let num = parseFloat(val)
+    let number
     if (num < 10000) {
-        num = num
+        number = num
     } else {
-        num = (num / 10000).toFixed(1) + '万'
+        number = (num / 10000).toFixed(1) + 'W'
     }
-    return num
+    return number
 }
 /**
  * 格式化百分比

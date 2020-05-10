@@ -1,7 +1,7 @@
 const Tools = {
 	config: {
 		// apiUrl: 'http://www.qiqiandu.com/',
-		apiUrl: 'http://localhost:8089/'
+		apiUrl: 'http://localhost:8080/'
 
 	},
 	/**
@@ -125,7 +125,8 @@ const Tools = {
 		// #ifndef MP-WEIXIN
 		zx_token = this.getLocalStorage('login') || '';
 		// #endif
-		if (options.isLoad) this.showLoading(); {
+		if (options.isLoad) this.showLoading();
+        {
 			url = this.config.apiUrl + url;
 		}
 		let contentType = 'application/x-www-form-urlencoded';

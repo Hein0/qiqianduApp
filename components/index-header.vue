@@ -91,6 +91,13 @@
 	    height: 31rpx;
 		line-height: 31rpx;
 		font-size: 26rpx;
+        /* #ifdef H5 || MP */
+        margin-top: 3rpx;
+        /* #endif*/
+        /* #ifdef APP-PLUS || APP-PLUS-NVUE*/
+        margin-top: 6rpx;
+        /* #endif*/
+        font-size: 26rpx;
 	}
     .input-wrap text {
         position: absolute;

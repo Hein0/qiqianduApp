@@ -7,6 +7,13 @@
 				"navigationStyle": "custom"
 			}
 		},
+        {
+        	"path": "pages/index/superBrand", // 超值品牌等。。
+        	"style": {
+        		"navigationBarTitleText": "超值品牌",
+        		"navigationStyle": "custom"
+        	}
+        },
 		{
 			"path": "pages/index/classify", // 分类
 			"style": {
@@ -14,6 +21,13 @@
 				"navigationStyle": "custom"
 			}
 		},
+        {
+        	"path": "pages/jiukuaijiu/jiukuaiList", // 九块九包邮
+        	"style": {
+        		"navigationBarTitleText": "九块九包邮",
+        		"navigationStyle": "custom"
+        	}
+        },
 		{
 			"path": "pages/index/classifyLists", // 分类列表
 			"style": {
@@ -100,6 +114,12 @@
 			"selectedIconPath": "static/images/home_sel.png",
 			"text": "首页"
 		},
+        {
+        	"pagePath": "pages/jiukuaijiu/jiukuaiList",
+        	"iconPath": "static/images/jkj_nosel.png",
+        	"selectedIconPath": "static/images/jkj_sel.png",
+        	"text": "9.9包邮"
+        },
 		{
 			"pagePath": "pages/search/search",
 			"iconPath": "static/images/search_nosel.png",
