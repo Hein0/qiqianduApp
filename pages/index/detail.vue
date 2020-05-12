@@ -648,8 +648,8 @@
 	.leftNuber .original{font-size:28rpx;margin-left: 15rpx;text-decoration:line-through;color: #666;}
 	.rightNuber{padding-right: 20rpx;color: #666;}
 	.titleTxtWrap{padding:0 10rpx 10rpx;color: #333;}
-	.channel{color: #FFFFFF;background: #fe6900;padding: 3rpx 8rpx;font-size:25rpx;margin-right:10rpx;border-radius: 5rpx;}
-	.titleTxt{font-size:32rpx}
+	.channel{color: #FFFFFF;background: #fe6900;padding: 3rpx 8rpx;font-size:22rpx;margin-right:10rpx;border-radius: 5rpx;}
+	.titleTxt{font-size:30rpx}
 	
 	.recommend{padding: 15rpx;background: #FFFFFF;display: flex;}
 	.recommend .leftRecommen{color: #f33;width: 150rpx;text-align:center;font-size:30rpx}
@@ -661,7 +661,7 @@
     .Shop-info .shopInfoWrap .shopInfoCent .shopInfoCent-logo{width:120rpx;height: 120rpx;text-align: center;margin-right: 10rpx;}
     .Shop-info .shopInfoWrap .shopInfoCent .shopInfoCent-logo image{width: 100rpx;height: 100rpx;border-radius: 20rpx;}
     .Shop-info .shopInfoWrap .shopInfoCent .shopInfoCent-desc{flex: 1;}
-    .Shop-info .shopInfoWrap .shopInfoCent .shopInfoCent-desc .shopName{font-size: 32rpx;margin-top: 10rpx;margin-bottom: 5rpx;}
+    .Shop-info .shopInfoWrap .shopInfoCent .shopInfoCent-desc .shopName{font-size: 30rpx;margin-top: 10rpx;margin-bottom: 5rpx;}
     .Shop-info .shopInfoWrap .shopInfoCent .shopInfoCent-desc .shopTxt{color: #888;font-size: 26rpx;}
     .Shop-info .shopInfoWrap .shopInfoCent .shopInfoCent-desc .shopTxt .channel{color: #FFFFFF;background: #fe6900;padding: 0rpx 5rpx;margin-right:10rpx;border-radius: 5rpx;font-size: 22rpx;}
     .Shop-info .shopInfoWrap .shopInfoCent .shopInfoCent-desc .shopTxt .numbers{color: #e42424;}

@@ -25,7 +25,8 @@
         	"path": "pages/jiukuaijiu/jiukuaiList", // 九块九包邮
         	"style": {
         		"navigationBarTitleText": "九块九包邮",
-        		"navigationStyle": "custom"
+        		"navigationStyle": "custom",
+                "enablePullDownRefresh": true  //允许下拉刷新
         	}
         },
 		{
