@@ -1,7 +1,7 @@
 const Tools = {
 	config: {
-		// apiUrl: 'http://www.qiqiandu.com/',
-		apiUrl: 'http://localhost:8080/'
+		apiUrl: 'http://www.qiqiandu.com/',
+		// apiUrl: 'http://localhost:8080/'
 
 	},
 	/**
@@ -141,6 +141,7 @@ const Tools = {
 				url: url,
 				data: params,
 				method: options.method || 'GET',
+                sslVerify: false, // 报错
 				header: headerConfig,
 				success: (res) => {
 					if (options.isLoad) this.hideLoading();
@@ -178,6 +179,7 @@ const Tools = {
 					reject(res);
 				},
 				complete: (res) => {
+                    this.hideLoading();
 					uni.stopPullDownRefresh(); // 可以停止当前页面的下拉刷新。
 				}
 			});

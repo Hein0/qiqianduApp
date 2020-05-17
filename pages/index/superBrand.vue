@@ -17,7 +17,6 @@
 					</view>
 		        </view>
 		    </view>
-			<view class="blank"></view>
 		</view>
         
         <!-- tab列表 -->
@@ -47,7 +46,7 @@
         		</view>
         	</view>
         </view>
-        
+        <view class="blank"></view>
 		<!-- 内容 -->
 		<view class="list_box">
 			<view class="boxItem" v-for="(item,index) in dataList" :key="index" @tap="gotoDetail(item.itemid)">
@@ -361,7 +360,7 @@
 	}
 </script>
 
-<style scoped>
+<style>
 	page{background: #f4f4f4 !important;}
 	/* start pageHead */
 	.header-wrap {
@@ -386,7 +385,7 @@
 	}  
    .blank {
 		/* #ifdef APP-PLUS */
-		height: 288rpx;
+		height: 280rpx;
 		/* #endif */
 		/* #ifdef H5 || MP-WEIXIN */
 		height: 254rpx;

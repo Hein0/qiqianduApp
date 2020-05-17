@@ -17,7 +17,6 @@
         			</view>
                 </view>
             </view>
-        	<view class="blank"></view>
         </view>
         
         <!-- tab列表 -->
@@ -26,8 +25,8 @@
         		<text class="uni-tab-item-title" :class="tabIndex==index ? 'uni-tab-item-title-active' : ''">{{tab.name}}</text>
         	</view>
         </scroll-view>
+        <!-- 挺高度-->
         <view class="blank"></view>
-        
         <!-- datalist-->
         <view class="bannerGap">
         	<view class="container">
@@ -321,10 +320,12 @@
     }  
     .blank {
         /* #ifdef APP-PLUS */
-        height: 126rpx;
+        /* height: 280rpx; */
+        height: 206rpx;
         /* #endif */
         /* #ifdef H5 || MP-WEIXIN */
-        height: 88rpx;
+        /* height: 254rpx; */
+        height: 166rpx;
         /* #endif */
     }
     .header-title-wrap {flex: 1;margin: 0 70rpx;height: 60rpx;line-height: 60rpx;color: #FFFFFF;position: relative;}
